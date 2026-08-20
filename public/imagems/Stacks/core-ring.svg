@@ -1,10 +1,14 @@
 <svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="150" height="150" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g id="Core Ring">
-<circle cx="75" cy="75" r="75" fill="#121314" fill-opacity="0.34"/>
-<circle cx="75" cy="75" r="74.5" stroke="url(#paint0_linear_55_4)" stroke-opacity="0.58"/>
+<circle cx="75" cy="75" r="75" fill="url(#paint0_radial_0_5)"/>
+<circle cx="75" cy="75" r="74.5" stroke="url(#paint1_linear_0_5)" stroke-opacity="0.48"/>
 </g>
 <defs>
-<linearGradient id="paint0_linear_55_4" x1="19" y1="31" x2="131" y2="119" gradientUnits="userSpaceOnUse">
+<radialGradient id="paint0_radial_0_5" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(75 75) scale(150)">
+<stop stop-color="#082129" stop-opacity="0.92"/>
+<stop offset="1" stop-color="#030912" stop-opacity="0.68"/>
+</radialGradient>
+<linearGradient id="paint1_linear_0_5" x1="-0.69029" y1="43.3157" x2="147.722" y2="105.442" gradientUnits="userSpaceOnUse">
 <stop stop-color="#40F26E"/>
 <stop offset="1" stop-color="#0FB8D1"/>
 </linearGradient>

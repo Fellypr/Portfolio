@@ -67,6 +67,18 @@ const skills = [
   },
 ];
 
+const orbitCenter = {
+  x: 227,
+  y: 226,
+};
+
+const skillIconCenter = {
+  x: 60,
+  y: 21,
+};
+
+const orbitRadius = 190;
+
 function SkillOrbitItem({
   id,
   name,
@@ -232,34 +244,43 @@ export function OrbitStack() {
           height={150}
           className="absolute top-[151px] left-[152px] size-[150px]"
         />
-        <Image
-          src="/imagems/Stacks/core-glow.svg"
-          alt=""
-          width={112}
-          height={112}
-          className="absolute top-[170px] left-[171px] size-[112px]"
-        />
-        <Image
-          src="/imagems/Stacks/gradient-core.svg"
-          alt=""
-          width={64}
-          height={64}
-          className="absolute top-[194px] left-[195px] size-16"
-        />
+        <div className="absolute top-[188px] left-[189px] size-[76px]">
+          <Image
+            src="/imagems/Stacks/core-glow.svg"
+            alt=""
+            width={120}
+            height={120}
+            className="absolute inset-[-28.95%] size-[120px] max-w-none"
+          />
+        </div>
+        <div className="absolute top-[194px] left-[195px] size-16">
+          <Image
+            src="/imagems/Stacks/gradient-core.svg"
+            alt=""
+            width={100}
+            height={100}
+            className="absolute inset-[-28.13%] size-[100px] max-w-none"
+          />
+        </div>
         <Image
           src="/imagems/Stacks/core-dot.svg"
           alt=""
-          width={54}
-          height={56}
-          className="absolute top-[198px] left-[201px] h-14 w-[54px]"
+          width={38}
+          height={40}
+          className="absolute top-[206px] left-[208px] h-10 w-[38px]"
         />
 
         {skills.map((skill) => {
           const angle = (skill.angle + rotationAngle) % 360;
           const radian = (angle * Math.PI) / 180;
-          const radius = 190;
-          const x = 227.5 + radius * Math.cos(radian) - 60;
-          const y = 213 + radius * Math.sin(radian) - 21;
+          const x =
+            orbitCenter.x +
+            orbitRadius * Math.cos(radian) -
+            skillIconCenter.x;
+          const y =
+            orbitCenter.y +
+            orbitRadius * Math.sin(radian) -
+            skillIconCenter.y;
           const zIndex = Math.round(20 + 10 * Math.sin(radian));
           const opacity = Math.max(
             0.45,
@@ -282,7 +303,7 @@ export function OrbitStack() {
         })}
 
         <p
-          className={`${robotoMono.className} absolute top-[211px] left-[228px] h-5 w-10 -translate-x-1/2 text-center text-[20px] leading-none font-normal text-[#f2fffa]`}
+          className={`${robotoMono.className} absolute top-[213px] left-[227px] h-[23px] w-10 -translate-x-1/2 text-center text-[16px] leading-normal font-normal text-[#f2fffa]`}
         >
           {"</>"}
         </p>
