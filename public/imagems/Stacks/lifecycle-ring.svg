@@ -1,3 +1,9 @@
 <svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="340" height="340" viewBox="0 0 340 340" fill="none" xmlns="http://www.w3.org/2000/svg">
-<circle id="Lifecycle Ring" cx="170" cy="170" r="169.5" stroke="#385975" stroke-opacity="0.72"/>
+<circle id="Lifecycle Ring" cx="170" cy="170" r="169.5" stroke="url(#paint0_linear_55_3)" stroke-opacity="0.95"/>
+<defs>
+<linearGradient id="paint0_linear_55_3" x1="38" y1="74" x2="302" y2="266" gradientUnits="userSpaceOnUse">
+<stop stop-color="#40F26E"/>
+<stop offset="1" stop-color="#0FB8D1"/>
+</linearGradient>
+</defs>
 </svg>

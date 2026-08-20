@@ -20,7 +20,7 @@ const skills = [
     name: "JavaScript",
     shortName: "JS",
     description: "Base para interfaces dinâmicas e experiências web ricas.",
-    color: "#f2c71f",
+    color: "#40f26e",
     ring: "/imagems/Stacks/icon-ring-js.svg",
     angle: -90,
     relatedIds: [2, 3],
@@ -30,7 +30,7 @@ const skills = [
     name: "TypeScript",
     shortName: "TS",
     description: "Tipagem e previsibilidade para aplicações escaláveis.",
-    color: "#2e8ceb",
+    color: "#40f26e",
     ring: "/imagems/Stacks/icon-ring-ts.svg",
     angle: -150,
     relatedIds: [1, 3],
@@ -40,7 +40,7 @@ const skills = [
     name: "Python",
     shortName: "PY",
     description: "Automação, dados e backends com desenvolvimento ágil.",
-    color: "#4dabe0",
+    color: "#40f26e",
     ring: "/imagems/Stacks/icon-ring-python.svg",
     angle: -20,
     relatedIds: [1, 2, 5],
@@ -50,7 +50,7 @@ const skills = [
     name: "Java",
     shortName: "JV",
     description: "Soluções robustas para serviços e arquitetura corporativa.",
-    color: "#f06129",
+    color: "#40f26e",
     ring: "/imagems/Stacks/icon-ring-java.svg",
     angle: 135,
     relatedIds: [2, 5],
@@ -60,7 +60,7 @@ const skills = [
     name: "Go",
     shortName: "GO",
     description: "Performance e simplicidade para APIs e sistemas concorrentes.",
-    color: "#14b8c7",
+    color: "#40f26e",
     ring: "/imagems/Stacks/icon-ring-go.svg",
     angle: 55,
     relatedIds: [3, 4],
@@ -109,7 +109,7 @@ function SkillOrbitItem({
           isRelated ? "animate-pulse opacity-100" : "opacity-0"
         }`}
         style={{
-          background: `radial-gradient(circle, ${color}55 0%, transparent 70%)`,
+          background: `radial-gradient(circle, ${color}57 0%, rgba(15,184,209,0.18) 45%, transparent 72%)`,
         }}
       />
 
@@ -129,7 +129,7 @@ function SkillOrbitItem({
 
       <p
         className={`${poppins.className} absolute top-[51px] left-1/2 w-[120px] -translate-x-1/2 text-center text-[12px] leading-none font-medium transition-all duration-300 ${
-          isActive ? "scale-110 text-white" : "text-[#d1deeb]"
+          isActive ? "scale-110 text-[#f2fffa]" : "text-[#ccdbe5]"
         }`}
       >
         {name}
@@ -137,20 +137,25 @@ function SkillOrbitItem({
 
       <p
         className={`${robotoMono.className} absolute top-3 left-1/2 h-[18px] w-[30px] -translate-x-1/2 text-center text-[12px] leading-normal font-normal`}
-        style={{ color }}
+        style={{
+          backgroundImage: "linear-gradient(133deg, #40f26e 7%, #0fb8d1 93%)",
+          WebkitBackgroundClip: "text",
+          backgroundClip: "text",
+          color: "transparent",
+        }}
       >
         {shortName}
       </p>
 
       {isActive && (
-        <div className="absolute top-[82px] left-1/2 z-50 w-[210px] -translate-x-1/2 rounded-[8px] border border-[rgba(46,79,115,0.9)] bg-[rgba(3,9,17,0.94)] p-3 text-center shadow-[0_16px_50px_rgba(0,0,0,0.45)]">
+        <div className="absolute top-[82px] left-1/2 z-50 w-[210px] -translate-x-1/2 rounded-[8px] border border-[rgba(15,184,209,0.48)] bg-[rgba(18,19,20,0.94)] p-3 text-center shadow-[0_16px_50px_rgba(0,0,0,0.45),0_0_28px_rgba(64,242,110,0.12)]">
           <p
             className={`${poppins.className} text-[13px] leading-none font-medium`}
-            style={{ color }}
+            style={{ color: "#f2fffa" }}
           >
             {name}
           </p>
-          <p className="mt-2 text-[11px] leading-[1.45] text-[#d1deeb]">
+          <p className="mt-2 text-[11px] leading-[1.45] text-[#ccdbe5]">
             {description}
           </p>
         </div>
@@ -277,7 +282,7 @@ export function OrbitStack() {
         })}
 
         <p
-          className={`${robotoMono.className} absolute top-[211px] left-[228px] h-5 w-10 -translate-x-1/2 text-center text-[20px] leading-none font-normal text-[#e5f2ff]`}
+          className={`${robotoMono.className} absolute top-[211px] left-[228px] h-5 w-10 -translate-x-1/2 text-center text-[20px] leading-none font-normal text-[#f2fffa]`}
         >
           {"</>"}
         </p>
