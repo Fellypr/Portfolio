@@ -110,7 +110,7 @@ export function ContactSection() {
               <p>→  LinkedIn:   linkedin.com/in/seu-perfil</p>
               <p>→  GitHub:     github.com/seu-usuario</p>
               <p>→  Fuso:       UTC-3 (BRT)</p>
-              <p>→  Status:     Disponível para novos projetos</p>
+              <p>→  Status:     Disponível para oportunidades e novos projetos</p>
               <br />
               <p>portfolio:~$ █</p>
             </div>
