@@ -1,4 +1,5 @@
 import { AboutSection } from "@/features/about";
+import { ContactSection } from "@/features/contact";
 import { HeroSection } from "@/features/hero";
 import { ProjectsSection } from "@/features/projects";
 import { StacksSection } from "@/features/stacks";
@@ -12,6 +13,7 @@ export default function Home() {
       <AboutSection />
       <StacksSection />
       <ProjectsSection />
+      <ContactSection />
     </main>
   );
 }
