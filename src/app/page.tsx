@@ -3,7 +3,7 @@ import { ContactSection } from "@/features/contact";
 import { HeroSection } from "@/features/hero";
 import { ProjectsSection } from "@/features/projects";
 import { StacksSection } from "@/features/stacks";
-import { Header } from "@/components";
+import { Footer, Header } from "@/components";
 
 export default function Home() {
   return (
@@ -14,6 +14,7 @@ export default function Home() {
       <StacksSection />
       <ProjectsSection />
       <ContactSection />
+      <Footer />
     </main>
   );
 }
