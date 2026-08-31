@@ -1,5 +1,9 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Poppins } from "next/font/google";
+import { SlideTabs } from "@/components/ui/slide-tabs";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -15,9 +19,26 @@ const navigationItems = [
 ];
 
 export function Header() {
+  const [hasScrolled, setHasScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setHasScrolled(window.scrollY > 24);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <header
-      className={`${poppins.className} flex w-full items-center justify-between px-6 py-5 text-[#f0f2fa] sm:px-10 lg:px-42.5 bg-transparent absolute z-20`}
+      className={`${poppins.className} fixed left-0 top-0 z-50 flex w-full items-center justify-between px-6 py-5 text-[#f0f2fa] transition-all duration-300 sm:px-10 lg:px-42.5 ${
+        hasScrolled
+          ? "border-b border-white/10 bg-[#08110c]/55 shadow-[0_12px_40px_rgba(0,0,0,0.22)] backdrop-blur-xl"
+          : "bg-transparent"
+      }`}
     >
       <Link
         href="/"
@@ -33,18 +54,7 @@ export function Header() {
       </Link>
 
       <nav aria-label="Primary navigation">
-        <ul className="hidden items-center gap-[42px] text-sm leading-none sm:flex">
-          {navigationItems.map((item) => (
-            <li key={item.href}>
-              <Link
-                href={item.href}
-                className="transition-colors duration-200 hover:text-[#2ed959] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#2ed959]"
-              >
-                {item.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <SlideTabs items={navigationItems} />
       </nav>
     </header>
   );
