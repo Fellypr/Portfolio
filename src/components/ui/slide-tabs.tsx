@@ -16,34 +16,29 @@ type CursorPosition = {
 };
 
 type SlideTabsProps = {
+  activeHref?: string;
   items: NavItem[];
+  onActiveHrefChange?: (href: string) => void;
 };
 
-export function SlideTabs({ items }: SlideTabsProps) {
+export function SlideTabs({
+  activeHref,
+  items,
+  onActiveHrefChange,
+}: SlideTabsProps) {
   const [position, setPosition] = useState<CursorPosition>({
     left: 0,
     width: 0,
     opacity: 0,
   });
-  const [selected, setSelected] = useState(0);
   const tabsRef = useRef<Array<HTMLLIElement | null>>([]);
+  const selected = Math.max(
+    0,
+    items.findIndex((item) => item.href === activeHref),
+  );
 
-  useEffect(() => {
-    const selectedTab = tabsRef.current[selected];
-
-    if (selectedTab) {
-      const { width } = selectedTab.getBoundingClientRect();
-
-      setPosition({
-        left: selectedTab.offsetLeft,
-        width,
-        opacity: 1,
-      });
-    }
-  }, [selected]);
-
-  const moveToSelectedTab = () => {
-    const selectedTab = tabsRef.current[selected];
+  const updateCursor = (index: number) => {
+    const selectedTab = tabsRef.current[index];
 
     if (selectedTab) {
       const { width } = selectedTab.getBoundingClientRect();
@@ -56,10 +51,30 @@ export function SlideTabs({ items }: SlideTabsProps) {
     }
   };
 
+  useEffect(() => {
+    updateCursor(selected);
+  }, [selected, items]);
+
+  useEffect(() => {
+    const handleResize = () => updateCursor(selected);
+
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, [selected]);
+
+  const moveToSelectedTab = () => {
+    updateCursor(selected);
+  };
+
+  if (items.length === 0) {
+    return null;
+  }
+
   return (
     <ul
       onMouseLeave={moveToSelectedTab}
-      className="relative hidden w-fit items-center rounded-full border border-white/60 bg-[#060b1441] p-1 text-sm leading-none backdrop-blur sm:flex"
+      className="relative hidden w-fit items-center rounded-full border border-[#19b630] bg-[#060b1441] p-1 text-sm leading-none backdrop-blur sm:flex"
     >
       {items.map((item, index) => (
         <Tab
@@ -68,8 +83,9 @@ export function SlideTabs({ items }: SlideTabsProps) {
             tabsRef.current[index] = element;
           }}
           href={item.href}
+          isSelected={selected === index}
           setPosition={setPosition}
-          onClick={() => setSelected(index)}
+          onClick={() => onActiveHrefChange?.(item.href)}
         >
           {item.label}
         </Tab>
@@ -83,12 +99,13 @@ export function SlideTabs({ items }: SlideTabsProps) {
 type TabProps = {
   children: React.ReactNode;
   href: string;
+  isSelected: boolean;
   setPosition: React.Dispatch<React.SetStateAction<CursorPosition>>;
   onClick: () => void;
 };
 
 const Tab = React.forwardRef<HTMLLIElement, TabProps>(
-  ({ children, href, setPosition, onClick }, ref) => {
+  ({ children, href, isSelected, setPosition, onClick }, ref) => {
     const updatePosition = () => {
       if (!ref || typeof ref === "function" || !ref.current) {
         return;
@@ -107,6 +124,7 @@ const Tab = React.forwardRef<HTMLLIElement, TabProps>(
       <li ref={ref} onMouseEnter={updatePosition} className="relative z-10">
         <Link
           href={href}
+          aria-current={isSelected ? "page" : undefined}
           onClick={onClick}
           className="block px-3 py-1.5 text-xs font-medium uppercase text-white mix-blend-difference transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#2ed959] md:px-5 md:py-2 md:text-sm"
         >
@@ -123,7 +141,7 @@ function Cursor({ position }: { position: CursorPosition }) {
   return (
     <motion.li
       animate={position}
-      className="absolute z-0 h-7 rounded-full border-white/50 border bg-[#2a2f3896] md:h-8"
+      className="absolute z-0 h-7 rounded-full border-[#622abd] border-2 bg-[#17181a96] md:h-8"
     />
   );
 }
