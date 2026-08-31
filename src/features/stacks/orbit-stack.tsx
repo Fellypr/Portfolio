@@ -17,28 +17,28 @@ const robotoMono = Roboto_Mono({
 const skills = [
   {
     id: 1,
-    name: "JavaScript",
-    shortName: "JS",
+    name: "C#",
+    shortName: "/iconsStaks/aspnetCore.png",
     description: "Base para interfaces dinâmicas e experiências web ricas.",
     color: "#40f26e",
     ring: "/imagems/Stacks/icon-ring-js.svg",
-    angle: -90,
+    angle: -88,
     relatedIds: [2, 3],
   },
   {
     id: 2,
-    name: "TypeScript",
-    shortName: "TS",
+    name: "JavaScript",
+    shortName: "/iconsStaks/js.png",
     description: "Tipagem e previsibilidade para aplicações escaláveis.",
     color: "#40f26e",
     ring: "/imagems/Stacks/icon-ring-ts.svg",
-    angle: -150,
+    angle: -153,
     relatedIds: [1, 3],
   },
   {
     id: 3,
     name: "Python",
-    shortName: "PY",
+    shortName: "/iconsStaks/python.png",
     description: "Automação, dados e backends com desenvolvimento ágil.",
     color: "#40f26e",
     ring: "/imagems/Stacks/icon-ring-python.svg",
@@ -47,8 +47,8 @@ const skills = [
   },
   {
     id: 4,
-    name: "Java",
-    shortName: "JV",
+    name: "React.js",
+    shortName: "/iconsStaks/fisica.png",
     description: "Soluções robustas para serviços e arquitetura corporativa.",
     color: "#40f26e",
     ring: "/imagems/Stacks/icon-ring-java.svg",
@@ -57,12 +57,65 @@ const skills = [
   },
   {
     id: 5,
-    name: "Go",
-    shortName: "GO",
+    name: "PostgresSql",
+    shortName: "/iconsStaks/PostgresSQL.png",
     description: "Performance e simplicidade para APIs e sistemas concorrentes.",
     color: "#40f26e",
     ring: "/imagems/Stacks/icon-ring-go.svg",
     angle: 55,
+    relatedIds: [3, 4],
+  },
+  {
+    id: 6,
+    name: "Figma",
+    shortName: "/iconsStaks/Figma.png",
+    description: "Performance e simplicidade para APIs e sistemas concorrentes.",
+    color: "#40f26e",
+    ring: "/imagems/Stacks/icon-ring-go.svg",
+    angle: 98,
+    relatedIds: [3, 4],
+  },
+  {
+    id: 7,
+    name: "Aws",
+    shortName: "/iconsStaks/AWS.png",
+    description: "Performance e simplicidade para APIs e sistemas concorrentes.",
+    color: "#40f26e",
+    ring: "/imagems/Stacks/icon-ring-go.svg",
+    angle: 171,
+    relatedIds: [3, 4],
+  },
+  {
+    id: 8,
+    name: "Github",
+    shortName: "/iconsStaks/github.png",
+    description: "Performance e simplicidade para APIs e sistemas concorrentes.",
+    color: "#40f26e",
+    ring: "/imagems/Stacks/icon-ring-go.svg",
+    angle: 
+    -120,
+    relatedIds: [3, 4],
+  },
+  {
+    id: 9,
+    name: "Postman",
+    shortName: "/iconsStaks/Postman.png",
+    description: "Performance e simplicidade para APIs e sistemas concorrentes.",
+    color: "#40f26e",
+    ring: "/imagems/Stacks/icon-ring-go.svg",
+    angle: 
+    20,
+    relatedIds: [3, 4],
+  },
+  {
+    id: 10,
+    name: "Linux",
+    shortName: "/iconsStaks/icons8-linux-96.png",
+    description: "Performance e simplicidade para APIs e sistemas concorrentes.",
+    color: "#40f26e",
+    ring: "/imagems/Stacks/icon-ring-go.svg",
+    angle: 
+    -53,
     relatedIds: [3, 4],
   },
 ];
@@ -148,15 +201,14 @@ function SkillOrbitItem({
       </p>
 
       <p
-        className={`${robotoMono.className} absolute top-3 left-1/2 h-[18px] w-[30px] -translate-x-1/2 text-center text-[12px] leading-normal font-normal`}
+        className={`${robotoMono.className} absolute top-3 left-1/2 h-[15px] w-[25px] -translate-x-1/2 -translate-y-1 leading-normal font-normal`}
         style={{
-          backgroundImage: "linear-gradient(133deg, #40f26e 7%, #0fb8d1 93%)",
+          backgroundColor: "linear-gradient(133deg, #40f26e 7%, #0fb8d1 93%)",
           WebkitBackgroundClip: "text",
           backgroundClip: "text",
-          color: "transparent",
         }}
       >
-        {shortName}
+        <img src={shortName || "imagem"} alt="imagem das stacks" />
       </p>
 
       {isActive && (
