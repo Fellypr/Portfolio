@@ -24,7 +24,16 @@ export const sidebarItems = [
   { label: "Contatos", icon: dashboardAssets.contactsNav },
 ];
 
-export const summaryCards = [
+type SummaryCard = {
+  label: string;
+  value: string;
+  description: string;
+  icon: string;
+  iconBackground: string;
+  compactValue?: boolean;
+};
+
+export const summaryCards: SummaryCard[] = [
   {
     label: "Projetos",
     value: "8",
