@@ -48,7 +48,7 @@ function StatusPill({ status }: { status: "Publicado" | "Rascunho" }) {
 export function ProjectsPanel() {
   return (
     <section className="h-[535px] w-[902px] rounded-[12px] border border-[#273449] bg-[#111827] shadow-[0_4px_16px_rgba(0,0,0,0.35)]">
-      <header className="flex h-[56px] items-start justify-between border-b border-[#263244] px-[24px] pt-[19px]">
+      <header className="flex h-[56px] items-center justify-between border-b border-[#263244] px-[24px]">
         <h2 className="text-[16px] leading-none font-semibold text-[#f8fafc]">Projetos</h2>
         <button className="flex h-[34px] w-[186px] items-center rounded-[8px] border border-[#334155] bg-[#111827] px-[15px]">
           <span className="text-[11px] leading-none text-[#e2e8f0]">Todos os status</span>
