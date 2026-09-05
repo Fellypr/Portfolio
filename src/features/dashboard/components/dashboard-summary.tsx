@@ -4,11 +4,11 @@ import { summaryCards } from "../dashboard-data";
 
 export function DashboardSummary() {
   return (
-    <section className="grid grid-cols-4 gap-[20px]">
+    <section className="grid grid-cols-3 gap-[20px]">
       {summaryCards.map((card) => (
         <article
           key={card.label}
-          className="flex h-[118px] w-[311.25px] items-center rounded-[14px] border border-[#273449] bg-[#111827] shadow-[0_5px_16px_rgba(0,0,0,0.35)]"
+          className="flex h-[118px] w-[100%] items-center rounded-[14px] border border-[#273449] bg-[#111827] shadow-[0_5px_16px_rgba(0,0,0,0.35)]"
         >
           <div
             className="ml-[20px] flex size-[66px] items-center justify-center rounded-[14px]"

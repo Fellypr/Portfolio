@@ -46,14 +46,6 @@ export const summaryCards = [
     icon: dashboardAssets.contactsCard,
     iconBackground: "#143522",
   },
-  {
-    label: "Sobre mim",
-    value: "Atualizado",
-    description: "há 3 dias",
-    icon: dashboardAssets.aboutCard,
-    iconBackground: "#3a2a0b",
-    compactValue: true,
-  },
 ];
 
 export type ProjectTag = {
