@@ -1,34 +1,16 @@
-export type CustomFetchConfig = {
-  url: string;
-  method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
-  params?: Record<string, string>;
-  data?: unknown;
-  headers?: HeadersInit;
-  signal?: AbortSignal;
-};
-
-export async function customFetch<T>({
-  url,
-  method,
-  params,
-  data,
-  headers,
-  signal,
-}: CustomFetchConfig): Promise<T> {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';
-  
-  // Monta os query parameters caso existam
-  const queryString = params ? `?${new URLSearchParams(params).toString()}` : '';
-  const fullUrl = `${baseUrl}${url}${queryString}`;
+export async function customFetch<T>(
+  url: string,
+  options?: RequestInit
+): Promise<T> {
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+  const fullUrl = `${baseUrl}${url}`;
 
   const response = await fetch(fullUrl, {
-    method,
+    ...options,
     headers: {
       'Content-Type': 'application/json',
-      ...headers,
+      ...options?.headers,
     },
-    body: data ? JSON.stringify(data) : undefined,
-    signal,
   });
 
   if (!response.ok) {
@@ -42,3 +24,5 @@ export async function customFetch<T>({
 
   return response.json();
 }
+
+export default customFetch;

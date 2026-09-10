@@ -1,28 +1,27 @@
-// orval.config.ts
 import { defineConfig } from 'orval';
 
 export default defineConfig({
   api: {
     input: {
-      target: './swagger.json',
+      target: 'http://localhost:5050/swagger/v1/swagger.json',
     },
     output: {
-      mode: 'tags-split',                      // Separa arquivos em pastas por tag/controller
-      target: './src/api/generated/endpoints', // Onde vão os hooks (useQuery/useMutation)
-      schemas: './src/api/generated/models',   // Onde vão as interfaces e DTOs
-      client: 'react-query',                   // Gera integração direta com TanStack Query
+      mode: 'tags-split',                      // tags-split ele em especifico, separa os endpoints por tags
+      target: './src/api/generated/hooks', // Onde vão os hooks
+      schemas: './src/api/generated/interfaces',   // Onde vão as interfaces
+      client: 'react-query',
       httpClient: 'fetch',
-      clean: true,                             // Remove arquivos antigos ao regerar
+      clean: true,                             // remove arquivos antigos ao regerar
       override: {
         mutator: {
-          path: './src/api/custom-fetch.ts',   // Caminho para o seu customFetch
-          name: 'customFetch',                 // Nome exato da função exportada
+          path: './src/api/custom-fetch.ts', 
+          name: 'customFetch',                 
         },
         query: {
           useQuery: true,
           useMutation: true,
           options: {
-            staleTime: 1000 * 60 * 5,          // Exemplo: 5 minutos de cache padrão
+            staleTime: 1000 * 60 * 5,          // 5 minutos para o cache padrão
           },
         },
       },
