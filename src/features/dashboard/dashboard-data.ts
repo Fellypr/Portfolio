@@ -117,6 +117,20 @@ export const projects: DashboardProject[] = [
   },
 ];
 
+export type DashboardProfile = {
+  name: string;
+  role: string;
+  bio: string;
+  initials: string;
+};
+
+export const defaultProfile: DashboardProfile = {
+  name: "Luiz Emiliano",
+  role: "Desenvolvedor Full Stack",
+  bio: "Desenvolvedor apaixonado por criar soluções web modernas, escaláveis e com excelente experiência do usuário...",
+  initials: "LE",
+};
+
 export const contacts = [
   { label: "GitHub", value: "github.com/luizemiliano" },
   { label: "LinkedIn", value: "linkedin.com/in/luizemiliano" },
