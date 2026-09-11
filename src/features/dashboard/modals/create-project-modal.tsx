@@ -4,23 +4,21 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
 import { ProjectThumbnail } from "../components/project-thumbnail";
-import type { ProjectResponseDto, UpdateProjectDto } from "@/api/generated/interfaces";
+import type { CreateProjectDto } from "@/api/generated/interfaces";
 
-type EditProjectModalProps = {
-  project: ProjectResponseDto | null;
+type CreateProjectModalProps = {
+  isOpen: boolean;
   onClose: () => void;
-  onSave?: (id: number, data: UpdateProjectDto) => Promise<void> | void;
+  onCreate?: (data: CreateProjectDto) => Promise<void> | void;
   isSubmitting?: boolean;
 };
 
-export function EditProjectModal({
-  project,
+export function CreateProjectModal({
+  isOpen,
   onClose,
-  onSave,
+  onCreate,
   isSubmitting = false,
-}: EditProjectModalProps) {
-  const isOpen = Boolean(project);
-
+}: CreateProjectModalProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [technologies, setTechnologies] = useState("");
@@ -29,20 +27,18 @@ export function EditProjectModal({
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (project) {
-      setTitle(project.titleProject || "");
-      setDescription(project.description || "");
-      setTechnologies(project.technologies || "");
-      setStatus(project.status || "Publicado");
-      setUrlImage(project.urlImage || "");
+    if (isOpen) {
+      setTitle("");
+      setDescription("");
+      setTechnologies("");
+      setStatus("Publicado");
+      setUrlImage("");
       setError(null);
     }
-  }, [project]);
+  }, [isOpen]);
 
   useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
+    if (!isOpen) return;
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
@@ -61,7 +57,6 @@ export function EditProjectModal({
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!project?.id) return;
 
     if (!title.trim() || !description.trim()) {
       setError("Título e descrição são obrigatórios.");
@@ -70,25 +65,25 @@ export function EditProjectModal({
 
     try {
       setError(null);
-      if (onSave) {
-        await onSave(project.id, {
+      if (onCreate) {
+        await onCreate({
           titleProject: title.trim(),
           description: description.trim(),
-          technologies: technologies.trim(),
+          technologies: technologies.trim() || "Geral",
           status: status.trim(),
-          urlImage: urlImage.trim() || "default-project-thumbnail",
+          urlImage: urlImage.trim() || "default-thumbnail",
         });
       }
       onClose();
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Falha ao salvar o projeto.";
+      const message = err instanceof Error ? err.message : "Falha ao criar o projeto.";
       setError(message);
     }
   };
 
   return (
     <AnimatePresence>
-      {project ? (
+      {isOpen ? (
         <motion.div
           className="fixed inset-0 z-50 flex items-center justify-center bg-[#020617]/75 px-6 backdrop-blur-[6px]"
           initial={{ opacity: 0 }}
@@ -100,7 +95,7 @@ export function EditProjectModal({
           <motion.div
             role="dialog"
             aria-modal="true"
-            aria-labelledby="edit-project-title"
+            aria-labelledby="create-project-title"
             className="w-full max-w-[720px] overflow-hidden rounded-[14px] border border-[#273449] bg-[#111827] shadow-[0_24px_80px_rgba(0,0,0,0.55)]"
             initial={{ opacity: 0, y: 24, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -111,10 +106,10 @@ export function EditProjectModal({
             <header className="flex items-start justify-between border-b border-[#263244] px-[26px] py-[22px]">
               <div>
                 <p className="text-[11px] leading-none font-medium tracking-[0.08em] text-[#64748b] uppercase">
-                  Projeto #{project.id}
+                  Novo Projeto
                 </p>
-                <h2 id="edit-project-title" className="mt-[10px] text-[22px] leading-none font-semibold text-[#f8fafc]">
-                  Editar projeto
+                <h2 id="create-project-title" className="mt-[10px] text-[22px] leading-none font-semibold text-[#f8fafc]">
+                  Criar projeto
                 </h2>
               </div>
 
@@ -162,6 +157,7 @@ export function EditProjectModal({
                     className="h-[42px] w-full rounded-[8px] border border-[#334155] bg-[#0f172a] px-[13px] text-[13px] font-medium text-[#f8fafc] outline-none transition placeholder:text-[#64748b] focus:border-[#5547f5] focus:ring-2 focus:ring-[#5547f5]/25"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
+                    placeholder="Ex: Plataforma E-commerce"
                     required
                   />
                 </label>
@@ -174,6 +170,7 @@ export function EditProjectModal({
                     className="h-[86px] w-full resize-none rounded-[8px] border border-[#334155] bg-[#0f172a] px-[13px] py-[12px] text-[13px] leading-[18px] text-[#e2e8f0] outline-none transition placeholder:text-[#64748b] focus:border-[#5547f5] focus:ring-2 focus:ring-[#5547f5]/25"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Breve resumo das funcionalidades e objetivo do projeto."
                     required
                   />
                 </label>
@@ -221,7 +218,7 @@ export function EditProjectModal({
                   disabled={isSubmitting}
                   className="flex h-[40px] w-[146px] items-center justify-center rounded-[8px] bg-[#5547f5] text-[12px] leading-none font-semibold text-white transition hover:bg-[#4f46e5] disabled:opacity-50"
                 >
-                  {isSubmitting ? "Salvando..." : "Salvar edição"}
+                  {isSubmitting ? "Criando..." : "Criar projeto"}
                 </button>
               </div>
             </form>
@@ -231,3 +228,4 @@ export function EditProjectModal({
     </AnimatePresence>
   );
 }
+
