@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "api:generate": "orval",
+    "orval": "orval",
     "api:watch": "orval --watch"
   },
   "dependencies": {

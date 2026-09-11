@@ -4,25 +4,6 @@
  * portfolioApi
  * OpenAPI spec version: 1.0
  */
-import {
-  useMutation,
-  useQuery
-} from '@tanstack/react-query';
-import type {
-  DataTag,
-  DefinedInitialDataOptions,
-  DefinedUseQueryResult,
-  MutationFunction,
-  QueryClient,
-  QueryFunction,
-  QueryKey,
-  UndefinedInitialDataOptions,
-  UseMutationOptions,
-  UseMutationResult,
-  UseQueryOptions,
-  UseQueryResult
-} from '@tanstack/react-query';
-
 import type {
   BooleanApiResponse,
   ContactResponseDtoApiResponse,
@@ -32,24 +13,6 @@ import type {
 } from '../../interfaces';
 
 import { customFetch } from '../../../custom-fetch';
-
-
-
-
-const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
-  const result = { queryKey } as T & { queryKey: K };
-  for (const key of Object.keys(query)) {
-    // The explicit queryKey always wins, matching the previous
-    // `{ ...query, queryKey }` spread where it was set last.
-    if (key === 'queryKey') continue;
-    Object.defineProperty(result, key, {
-      enumerable: true,
-      configurable: true,
-      get: () => (query as Record<string, unknown>)[key],
-    });
-  }
-  return result;
-};
 
 export type getApiContactsGetAllContactsResponse200TextPlain = {
   data: ContactResponseDtoListApiResponse
@@ -81,7 +44,7 @@ export const getGetApiContactsGetAllContactsUrl = () => {
   return `/api/Contacts/GetAllContacts`
 }
 
-export const getApiContactsGetAllContacts = async ( options?: RequestInit): Promise<getApiContactsGetAllContactsResponse> => {
+export const getApiContactsGetAllContacts = async ( options?: Parameters<typeof customFetch>[1]): Promise<getApiContactsGetAllContactsResponse> => {
 
   return customFetch<getApiContactsGetAllContactsResponse>(getGetApiContactsGetAllContactsUrl(),
   {
@@ -93,54 +56,7 @@ export const getApiContactsGetAllContacts = async ( options?: RequestInit): Prom
 );}
 
 
-
-
-
-export const getGetApiContactsGetAllContactsMutationKey = () => ['getApiContactsGetAllContacts'] as const;
-
-export const getGetApiContactsGetAllContactsMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof getApiContactsGetAllContacts>>, TError,void, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof getApiContactsGetAllContacts>>, TError,void, TContext> => {
-
-const mutationKey = getGetApiContactsGetAllContactsMutationKey();
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof getApiContactsGetAllContacts>>, void> = () => {
-
-
-          return  getApiContactsGetAllContacts()
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type GetApiContactsGetAllContactsMutationResult = NonNullable<Awaited<ReturnType<typeof getApiContactsGetAllContacts>>>
-
-    export type GetApiContactsGetAllContactsMutationError = unknown
-
-
-    export const useGetApiContactsGetAllContacts = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof getApiContactsGetAllContacts>>, TError,void, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof getApiContactsGetAllContacts>>,
-        TError,
-        void,
-        TContext
-      > => {
-      return useMutation(getGetApiContactsGetAllContactsMutationOptions(options), queryClient);
-    }
-    export type postApiContactsAddContactResponse200TextPlain = {
+export type postApiContactsAddContactResponse200TextPlain = {
   data: ContactResponseDtoApiResponse
   status: 200
 }
@@ -170,7 +86,7 @@ export const getPostApiContactsAddContactUrl = () => {
   return `/api/Contacts/AddContact`
 }
 
-export const postApiContactsAddContact = async (createContactDto?: CreateContactDto, options?: RequestInit): Promise<postApiContactsAddContactResponse> => {
+export const postApiContactsAddContact = async (createContactDto?: CreateContactDto, options?: Parameters<typeof customFetch>[1]): Promise<postApiContactsAddContactResponse> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -194,80 +110,6 @@ return customFetch<postApiContactsAddContactResponse>(getPostApiContactsAddConta
     body: JSON.stringify(createContactDto)
   }
 );}
-
-
-
-
-
-export const getPostApiContactsAddContactQueryKey = (createContactDto?: CreateContactDto,) => {
-    return [
-    'POST', `/api/Contacts/AddContact`, createContactDto
-    ] as const;
-    }
-
-
-export const getPostApiContactsAddContactQueryOptions = <TData = Awaited<ReturnType<typeof postApiContactsAddContact>>, TError = unknown>(createContactDto?: CreateContactDto, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postApiContactsAddContact>>, TError, TData>>, }
-) => {
-
-const {query: queryOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getPostApiContactsAddContactQueryKey(createContactDto);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof postApiContactsAddContact>>> = ({ signal }) => postApiContactsAddContact(createContactDto, { signal });
-
-
-
-
-
-   return  { queryKey, queryFn,   staleTime: 300000,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof postApiContactsAddContact>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type PostApiContactsAddContactQueryResult = NonNullable<Awaited<ReturnType<typeof postApiContactsAddContact>>>
-export type PostApiContactsAddContactQueryError = unknown
-
-
-export function usePostApiContactsAddContact<TData = Awaited<ReturnType<typeof postApiContactsAddContact>>, TError = unknown>(
- createContactDto: undefined |  CreateContactDto, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof postApiContactsAddContact>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof postApiContactsAddContact>>,
-          TError,
-          Awaited<ReturnType<typeof postApiContactsAddContact>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function usePostApiContactsAddContact<TData = Awaited<ReturnType<typeof postApiContactsAddContact>>, TError = unknown>(
- createContactDto?: CreateContactDto, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postApiContactsAddContact>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof postApiContactsAddContact>>,
-          TError,
-          Awaited<ReturnType<typeof postApiContactsAddContact>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function usePostApiContactsAddContact<TData = Awaited<ReturnType<typeof postApiContactsAddContact>>, TError = unknown>(
- createContactDto?: CreateContactDto, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postApiContactsAddContact>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-
-export function usePostApiContactsAddContact<TData = Awaited<ReturnType<typeof postApiContactsAddContact>>, TError = unknown>(
- createContactDto?: CreateContactDto, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof postApiContactsAddContact>>, TError, TData>>, }
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getPostApiContactsAddContactQueryOptions(createContactDto,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
-
-
-
-
 
 
 export type putApiContactsUpdateContactIdResponse200TextPlain = {
@@ -301,7 +143,7 @@ export const getPutApiContactsUpdateContactIdUrl = (id: number,) => {
 }
 
 export const putApiContactsUpdateContactId = async (id: number,
-    updateContactDto?: UpdateContactDto, options?: RequestInit): Promise<putApiContactsUpdateContactIdResponse> => {
+    updateContactDto?: UpdateContactDto, options?: Parameters<typeof customFetch>[1]): Promise<putApiContactsUpdateContactIdResponse> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -325,86 +167,6 @@ return customFetch<putApiContactsUpdateContactIdResponse>(getPutApiContactsUpdat
     body: JSON.stringify(updateContactDto)
   }
 );}
-
-
-
-
-
-export const getPutApiContactsUpdateContactIdQueryKey = (id: number,
-    updateContactDto?: UpdateContactDto,) => {
-    return [
-    'PUT', `/api/Contacts/UpdateContact/${id}`, updateContactDto
-    ] as const;
-    }
-
-
-export const getPutApiContactsUpdateContactIdQueryOptions = <TData = Awaited<ReturnType<typeof putApiContactsUpdateContactId>>, TError = unknown>(id: number,
-    updateContactDto?: UpdateContactDto, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof putApiContactsUpdateContactId>>, TError, TData>>, }
-) => {
-
-const {query: queryOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getPutApiContactsUpdateContactIdQueryKey(id,updateContactDto);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof putApiContactsUpdateContactId>>> = ({ signal }) => putApiContactsUpdateContactId(id,updateContactDto, { signal });
-
-
-
-
-
-   return  { queryKey, queryFn, enabled: id !== null && id !== undefined,  staleTime: 300000,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof putApiContactsUpdateContactId>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type PutApiContactsUpdateContactIdQueryResult = NonNullable<Awaited<ReturnType<typeof putApiContactsUpdateContactId>>>
-export type PutApiContactsUpdateContactIdQueryError = unknown
-
-
-export function usePutApiContactsUpdateContactId<TData = Awaited<ReturnType<typeof putApiContactsUpdateContactId>>, TError = unknown>(
- id: number,
-    updateContactDto: undefined |  UpdateContactDto, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof putApiContactsUpdateContactId>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof putApiContactsUpdateContactId>>,
-          TError,
-          Awaited<ReturnType<typeof putApiContactsUpdateContactId>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function usePutApiContactsUpdateContactId<TData = Awaited<ReturnType<typeof putApiContactsUpdateContactId>>, TError = unknown>(
- id: number,
-    updateContactDto?: UpdateContactDto, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof putApiContactsUpdateContactId>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof putApiContactsUpdateContactId>>,
-          TError,
-          Awaited<ReturnType<typeof putApiContactsUpdateContactId>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function usePutApiContactsUpdateContactId<TData = Awaited<ReturnType<typeof putApiContactsUpdateContactId>>, TError = unknown>(
- id: number,
-    updateContactDto?: UpdateContactDto, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof putApiContactsUpdateContactId>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-
-export function usePutApiContactsUpdateContactId<TData = Awaited<ReturnType<typeof putApiContactsUpdateContactId>>, TError = unknown>(
- id: number,
-    updateContactDto?: UpdateContactDto, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof putApiContactsUpdateContactId>>, TError, TData>>, }
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getPutApiContactsUpdateContactIdQueryOptions(id,updateContactDto,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
-
-
-
-
 
 
 export type deleteApiContactsDeleteContactIdResponse200TextPlain = {
@@ -437,7 +199,7 @@ export const getDeleteApiContactsDeleteContactIdUrl = (id: number,) => {
   return `/api/Contacts/DeleteContact/${id}`
 }
 
-export const deleteApiContactsDeleteContactId = async (id: number, options?: RequestInit): Promise<deleteApiContactsDeleteContactIdResponse> => {
+export const deleteApiContactsDeleteContactId = async (id: number, options?: Parameters<typeof customFetch>[1]): Promise<deleteApiContactsDeleteContactIdResponse> => {
 
   return customFetch<deleteApiContactsDeleteContactIdResponse>(getDeleteApiContactsDeleteContactIdUrl(id),
   {
@@ -447,79 +209,5 @@ export const deleteApiContactsDeleteContactId = async (id: number, options?: Req
 
   }
 );}
-
-
-
-
-
-export const getDeleteApiContactsDeleteContactIdQueryKey = (id: number,) => {
-    return [
-    'DELETE', `/api/Contacts/DeleteContact/${id}`
-    ] as const;
-    }
-
-
-export const getDeleteApiContactsDeleteContactIdQueryOptions = <TData = Awaited<ReturnType<typeof deleteApiContactsDeleteContactId>>, TError = unknown>(id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof deleteApiContactsDeleteContactId>>, TError, TData>>, }
-) => {
-
-const {query: queryOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getDeleteApiContactsDeleteContactIdQueryKey(id);
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof deleteApiContactsDeleteContactId>>> = ({ signal }) => deleteApiContactsDeleteContactId(id, { signal });
-
-
-
-
-
-   return  { queryKey, queryFn, enabled: id !== null && id !== undefined,  staleTime: 300000,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof deleteApiContactsDeleteContactId>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type DeleteApiContactsDeleteContactIdQueryResult = NonNullable<Awaited<ReturnType<typeof deleteApiContactsDeleteContactId>>>
-export type DeleteApiContactsDeleteContactIdQueryError = unknown
-
-
-export function useDeleteApiContactsDeleteContactId<TData = Awaited<ReturnType<typeof deleteApiContactsDeleteContactId>>, TError = unknown>(
- id: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof deleteApiContactsDeleteContactId>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof deleteApiContactsDeleteContactId>>,
-          TError,
-          Awaited<ReturnType<typeof deleteApiContactsDeleteContactId>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useDeleteApiContactsDeleteContactId<TData = Awaited<ReturnType<typeof deleteApiContactsDeleteContactId>>, TError = unknown>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof deleteApiContactsDeleteContactId>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof deleteApiContactsDeleteContactId>>,
-          TError,
-          Awaited<ReturnType<typeof deleteApiContactsDeleteContactId>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useDeleteApiContactsDeleteContactId<TData = Awaited<ReturnType<typeof deleteApiContactsDeleteContactId>>, TError = unknown>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof deleteApiContactsDeleteContactId>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-
-export function useDeleteApiContactsDeleteContactId<TData = Awaited<ReturnType<typeof deleteApiContactsDeleteContactId>>, TError = unknown>(
- id: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof deleteApiContactsDeleteContactId>>, TError, TData>>, }
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getDeleteApiContactsDeleteContactIdQueryOptions(id,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
-
-
-
-
 
 
