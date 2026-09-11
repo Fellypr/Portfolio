@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 
 import {
-  contacts,
+  contacts as initialContacts,
   dashboardAssets,
   defaultProfile,
   type DashboardProfile,
@@ -71,8 +71,23 @@ export function AboutPanel() {
 }
 
 export function ContactsPanel() {
+  const [contactsList, setContactsList] = useState(initialContacts);
+  const [editingLabel, setEditingLabel] = useState<string | null>(null);
+
+  const handleToggleEdit = (label: string) => {
+    setEditingLabel((current) => (current === label ? null : label));
+  };
+
+  const handleValueChange = (label: string, newValue: string) => {
+    setContactsList((prev) =>
+      prev.map((contact) =>
+        contact.label === label ? { ...contact, value: newValue } : contact
+      )
+    );
+  };
+
   return (
-    <section className="h-[168px] w-[385px] rounded-[12px] border border-[#273449] bg-[#111827] shadow-[0_4px_16px_rgba(0,0,0,0.35)]">
+    <section className="h-auto min-h-[168px] w-[385px] rounded-[12px] border border-[#273449] bg-[#111827] pb-[16px] shadow-[0_4px_16px_rgba(0,0,0,0.35)]">
       <header className="flex items-center gap-[14px] px-[20px] pt-[18px]">
         <Image
           src={dashboardAssets.contactsPanel}
@@ -86,23 +101,52 @@ export function ContactsPanel() {
         </h2>
       </header>
 
-      <div className="mt-[19px] space-y-[17px] px-[22px]">
-        {contacts.map((contact) => (
-          <div
-            key={contact.label}
-            className="grid grid-cols-[84px_1fr_12px] items-center"
-          >
-            <p className="text-[11px] leading-none font-medium text-[#e2e8f0]">
-              {contact.label}
-            </p>
-            <p className="text-[10px] leading-none text-[#cbd5e1]">
-              {contact.value}
-            </p>
-            <span className="text-[13px] leading-none font-medium text-[#94a3b8]">
-              ↗
-            </span>
-          </div>
-        ))}
+      <div className="mt-[19px] space-y-[14px] px-[22px]">
+        {contactsList.map((contact) => {
+          const isEditing = editingLabel === contact.label;
+
+          return (
+            <div
+              key={contact.label}
+              className="grid grid-cols-[84px_1fr_20px] items-center gap-[6px]"
+            >
+              <p className="text-[11px] leading-none font-medium text-[#e2e8f0]">
+                {contact.label}
+              </p>
+
+              {isEditing ? (
+                <input
+                  type="text"
+                  autoFocus
+                  value={contact.value}
+                  onChange={(e) =>
+                    handleValueChange(contact.label, e.target.value)
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === "Escape") {
+                      setEditingLabel(null);
+                    }
+                  }}
+                  className="h-[26px] w-full rounded-[4px] border border-[#5547f5] bg-[#0f172a] px-[8px] text-[11px] text-[#f8fafc] outline-none transition focus:ring-1 focus:ring-[#5547f5]"
+                />
+              ) : (
+                <p className="truncate text-[10px] leading-none text-[#cbd5e1]">
+                  {contact.value}
+                </p>
+              )}
+
+              <button
+                type="button"
+                onClick={() => handleToggleEdit(contact.label)}
+                className="flex size-[20px] items-center justify-center rounded-[4px] text-[13px] leading-none font-medium text-[#94a3b8] transition hover:bg-[#1e293b] hover:text-[#f8fafc] cursor-pointer"
+                title={isEditing ? "Salvar contato" : "Editar contato"}
+                aria-label={isEditing ? `Salvar ${contact.label}` : `Editar ${contact.label}`}
+              >
+                {isEditing ? "✓" : "↗"}
+              </button>
+            </div>
+          );
+        })}
       </div>
     </section>
   );
