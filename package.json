@@ -6,9 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "api:generate": "orval",
+    "orval": "orval",
+    "api:watch": "orval --watch"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.102.8",
     "framer-motion": "^13.1.1",
     "next": "16.3.0",
     "react": "19.2.8",
@@ -22,6 +26,7 @@
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.3.0",
+    "orval": "^8.30.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
