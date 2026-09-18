@@ -3,29 +3,62 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
-import type { DashboardProfile } from "../dashboard-data";
+export type ProfileFormData = {
+  name: string;
+  role: string;
+  bio: string;
+  initials: string;
+};
 
 type EditProfileModalProps = {
   isOpen: boolean;
-  profile: DashboardProfile;
+  profile: ProfileFormData;
   onClose: () => void;
-  onSave?: (profile: DashboardProfile) => void;
+  onSave?: (profile: ProfileFormData) => Promise<void> | void;
+  isSubmitting?: boolean;
 };
 
 type EditProfileFormProps = {
-  profile: DashboardProfile;
+  profile: ProfileFormData;
   onClose: () => void;
-  onSave?: (profile: DashboardProfile) => void;
+  onSave?: (profile: ProfileFormData) => Promise<void> | void;
+  isSubmitting?: boolean;
 };
 
-function EditProfileForm({ profile, onClose, onSave }: EditProfileFormProps) {
-  const [formData, setFormData] = useState<DashboardProfile>(profile);
+function EditProfileForm({
+  profile,
+  onClose,
+  onSave,
+  isSubmitting = false,
+}: EditProfileFormProps) {
+  const [formData, setFormData] = useState<ProfileFormData>(profile);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  useEffect(() => {
+    setFormData(profile);
+    setError(null);
+  }, [profile]);
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    onSave?.(formData);
-    onClose();
+    if (!formData.name.trim() || !formData.role.trim() || !formData.bio.trim()) {
+      setError("Todos os campos principais são obrigatórios.");
+      return;
+    }
+
+    try {
+      setError(null);
+      if (onSave) {
+        await onSave(formData);
+      }
+      onClose();
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : "Erro ao salvar perfil.";
+      setError(message);
+    }
   };
+
 
   const handleNameChange = (name: string) => {
     const words = name.trim().split(/\s+/);
@@ -80,6 +113,12 @@ function EditProfileForm({ profile, onClose, onSave }: EditProfileFormProps) {
         className="space-y-[20px] px-[26px] py-[24px]"
         onSubmit={handleSubmit}
       >
+        {error && (
+          <div className="rounded-[6px] border border-red-500/40 bg-red-500/10 p-2.5 text-[12px] text-red-400">
+            {error}
+          </div>
+        )}
+
         {/* Profile Avatar & Quick Preview */}
         <div className="flex items-center gap-[20px] rounded-[10px] border border-[#263244] bg-[#0f172a] p-[16px]">
           <div className="flex size-[64px] shrink-0 items-center justify-center rounded-full bg-[#1f2937] ring-2 ring-[#5547f5]/40">
@@ -169,14 +208,16 @@ function EditProfileForm({ profile, onClose, onSave }: EditProfileFormProps) {
             type="button"
             className="h-[40px] w-[112px] rounded-[8px] border border-[#334155] bg-[#111827] text-[12px] leading-none font-medium text-[#e2e8f0] transition hover:border-[#475569] hover:bg-[#172033] cursor-pointer"
             onClick={onClose}
+            disabled={isSubmitting}
           >
             Cancelar
           </button>
           <button
             type="submit"
-            className="flex h-[40px] w-[146px] items-center justify-center rounded-[8px] bg-[#5547f5] text-[12px] leading-none font-semibold text-white transition hover:bg-[#4f46e5] cursor-pointer"
+            disabled={isSubmitting}
+            className="flex h-[40px] w-[146px] items-center justify-center rounded-[8px] bg-[#5547f5] text-[12px] leading-none font-semibold text-white transition hover:bg-[#4f46e5] disabled:opacity-50 cursor-pointer"
           >
-            Salvar perfil
+            {isSubmitting ? "Salvando..." : "Salvar perfil"}
           </button>
         </div>
       </form>
@@ -189,6 +230,7 @@ export function EditProfileModal({
   profile,
   onClose,
   onSave,
+  isSubmitting = false,
 }: EditProfileModalProps) {
   useEffect(() => {
     if (!isOpen) {
@@ -225,9 +267,11 @@ export function EditProfileModal({
             profile={profile}
             onClose={onClose}
             onSave={onSave}
+            isSubmitting={isSubmitting}
           />
         </motion.div>
       ) : null}
     </AnimatePresence>
   );
 }
+

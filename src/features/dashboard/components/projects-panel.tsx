@@ -45,16 +45,26 @@ function parseTechnologies(techsString?: string | null): string[] {
     .filter(Boolean);
 }
 
-export function ProjectsPanel() {
-  const {
-    projects,
-    loading,
-    error,
-    isSubmitting,
-    updateProject,
-    deleteProject,
-    refresh,
-  } = useDashboardProjects();
+export interface ProjectsPanelProps {
+  projects: ProjectResponseDto[];
+  loading: boolean;
+  error: string | null;
+  isSubmitting: boolean;
+  updateProject: (id: number, data: UpdateProjectDto) => Promise<unknown>;
+  deleteProject: (id: number) => Promise<boolean>;
+  refresh: () => Promise<void> | void;
+}
+
+export function ProjectsPanel({
+  projects,
+  loading,
+  error,
+  isSubmitting,
+  updateProject,
+  deleteProject,
+  refresh,
+}: ProjectsPanelProps) {
+
 
   const [selectedProject, setSelectedProject] = useState<ProjectResponseDto | null>(null);
   const [filterStatus, setFilterStatus] = useState<string>("Todos");

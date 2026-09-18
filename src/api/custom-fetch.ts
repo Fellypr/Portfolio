@@ -35,7 +35,7 @@ export async function customFetch<T>(
   url: string,
   options?: RequestInit
 ): Promise<T> {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5242';
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
   const fullUrl = `${baseUrl}${url}`;
 
   const headers = new Headers(options?.headers);
