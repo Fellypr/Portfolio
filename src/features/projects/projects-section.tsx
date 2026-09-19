@@ -310,7 +310,12 @@ export function ProjectsSection() {
               className="absolute top-[166px] left-1/2 h-[360px] w-[1440px] origin-top -translate-x-1/2 scale-[0.58] cursor-grab touch-pan-y outline-none active:cursor-grabbing sm:top-[190px] sm:scale-[0.75] lg:top-0 lg:scale-100"
             >
               {projectCards.map((project, index) => (
-                <div
+                <img
+                  src={project.urlImage ?? undefined}
+                  alt={project.title}
+                  style={{
+                    background: project.fallbackGradient,
+                  }}
                   key={project.id}
                   ref={(node) => {
                     cardRefs.current[index] = node;
@@ -320,12 +325,9 @@ export function ProjectsSection() {
                   aria-label={`${index + 1} de ${count}`}
                   aria-current={selected === index}
                   onClick={() => goTo(index)}
-                  className="absolute top-[369px] left-[710px] size-[320px] rounded-[14px] border border-[rgba(87,122,158,0.35)] bg-cover bg-center transition-[border-color,box-shadow] duration-300 will-change-transform"
-                  style={{
-                    backgroundImage: project.urlImage
-                      ? `url(${project.urlImage})`
-                      : project.fallbackGradient,
-                  }}
+                  className="absolute top-[369px] left-[710px] max-w-[250px] max-h-[200px]
+                  min-w-[350px] min-h-[220px] rounded-[14px] border border-[rgba(87,122,158,0.35)] bg-no-repeat bg-cover bg-center transition-[border-color,box-shadow] duration-300 will-change-transform"
+      
                   data-project-id={project.id}
                   data-name={`Project ${String(index + 1).padStart(2, "0")}${
                     index === selected ? " / Featured" : ""
@@ -336,7 +338,7 @@ export function ProjectsSection() {
 
             {selectedProject && (
               <div
-                className="absolute top-[445px] left-1/2 flex w-[320px] -translate-x-1/2 flex-col items-center gap-2 overflow-hidden text-center sm:top-[510px] lg:top-[563px]"
+                className="absolute top-[445px] left-1/2 flex w-[420px] -translate-x-1/2 flex-col items-center gap-2 overflow-hidden text-center sm:top-[510px] lg:top-[563px] p-2"
                 data-name="Project / Featured Details"
               >
                 <h2 className="text-[24px] leading-normal font-semibold whitespace-nowrap text-[#f5faff]">
@@ -354,7 +356,7 @@ export function ProjectsSection() {
                     </p>
 
                     <div
-                      className="flex items-center gap-2 overflow-hidden pt-1"
+                      className="flex items-center gap-2 overflow-hidden pt-1 flex-wrap justify-center"
                       data-name="Project / Technologies"
                     >
                       {selectedProject.technologies.map((technology) => (
