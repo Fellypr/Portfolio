@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { useMemo, useState } from "react";
-
 import type { ProjectResponseDto, UpdateProjectDto } from "@/api/generated/interfaces";
 import { dashboardAssets } from "../dashboard-data";
 import { useDashboardProjects } from "../hooks/use-dashboard-projects";
@@ -163,7 +162,7 @@ export function ProjectsPanel({
                       index === filteredProjects.length - 1 ? "border-b-0" : "",
                     ].join(" ")}
                   >
-                    <ProjectThumbnail variant="devQuest" />
+                    <img className="rounded-[8px] min-w-[200px] min-h-[100px] max-w-[150px] max-h-[150px]" src={project.urlImage || "/default-project-image.png"} alt={project.titleProject || "Imagem do projeto"} width={100} height={100} />
 
                     <div className="ml-[29px] w-[330px] pt-[2px]">
                       <h3 className="text-[16px] leading-none font-semibold text-[#f8fafc] truncate">

@@ -20,6 +20,7 @@ export function useDashboardProjects() {
       setError(null);
       const data = await projectsService.getAll();
       setProjects(data);
+      console.log("Projects fetched:", data);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Erro ao carregar os projetos.";
       setError(message);
