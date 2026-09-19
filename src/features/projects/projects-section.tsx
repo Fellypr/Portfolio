@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { Poppins } from "next/font/google";
+import { useDashboardProjects } from "@/features/dashboard/hooks/use-dashboard-projects";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -11,56 +12,14 @@ const poppins = Poppins({
 const useIsoLayoutEffect =
   typeof window !== "undefined" ? React.useLayoutEffect : React.useEffect;
 
-const projectCards = [
-  {
-    id: 1,
-    title: "Terminal Finance",
-    subtitle: "Dashboard para acompanhar métricas financeiras em tempo real.",
-    technologies: ["React", "TypeScript", "Recharts"],
-    gradient: "linear-gradient(131deg,#0d2940 14%,#145961 86%)",
-  },
-  {
-    id: 2,
-    title: "DevFlow API",
-    subtitle: "Backend escalável para automações e integrações internas.",
-    technologies: ["Node.js", "NestJS", "PostgreSQL"],
-    gradient: "linear-gradient(130deg,#1f1747 14%,#2e5275 86%)",
-  },
-  {
-    id: 3,
-    title: "Studio Commerce",
-    subtitle: "Experiência de compra rápida com vitrine responsiva.",
-    technologies: ["Next.js", "Tailwind", "Stripe"],
-    gradient: "linear-gradient(129deg,#0a2e57 14%,#26757a 86%)",
-  },
-  {
-    id: 4,
-    title: "Título do projeto",
-    subtitle: "Subtítulo ou breve descrição do projeto",
-    technologies: ["React", "TypeScript", "Node.js"],
-    gradient: "linear-gradient(135deg,#172e5c 14%,#1aad85 86%)",
-  },
-  {
-    id: 5,
-    title: "Insight CRM",
-    subtitle: "Pipeline comercial com filtros, relatórios e visão executiva.",
-    technologies: ["React", "Prisma", "MongoDB"],
-    gradient: "linear-gradient(129deg,#2e1c52 14%,#2e7394 86%)",
-  },
-  {
-    id: 6,
-    title: "Ops Monitor",
-    subtitle: "Painel operacional para alertas, filas e saúde de serviços.",
-    technologies: ["TypeScript", "Go", "Docker"],
-    gradient: "linear-gradient(130deg,#4d1a2e 14%,#8a4029 86%)",
-  },
-  {
-    id: 7,
-    title: "Portfolio Lab",
-    subtitle: "Experimentos visuais com componentes e microinterações.",
-    technologies: ["Next.js", "CSS", "Figma"],
-    gradient: "linear-gradient(131deg,#142b47 14%,#3d576b 86%)",
-  },
+const GRADIENTS = [
+  "linear-gradient(131deg,#0d2940 14%,#145961 86%)",
+  "linear-gradient(130deg,#1f1747 14%,#2e5275 86%)",
+  "linear-gradient(129deg,#0a2e57 14%,#26757a 86%)",
+  "linear-gradient(135deg,#172e5c 14%,#1aad85 86%)",
+  "linear-gradient(129deg,#2e1c52 14%,#2e7394 86%)",
+  "linear-gradient(130deg,#4d1a2e 14%,#8a4029 86%)",
+  "linear-gradient(131deg,#142b47 14%,#3d576b 86%)",
 ];
 
 const slotOffsets = [0, 300, 530, 730];
@@ -78,11 +37,26 @@ function interpolateSlot(values: number[], distance: number) {
 }
 
 export function ProjectsSection() {
+  const { projects, loading, error } = useDashboardProjects();
+
+  const projectCards = React.useMemo(() => {
+    return projects.map((p, i) => ({
+      id: p.id ?? i + 1,
+      title: p.titleProject ?? "Sem título",
+      subtitle: p.description ?? "",
+      technologies: p.technologies
+        ? p.technologies.split(",").map((t) => t.trim()).filter(Boolean)
+        : [],
+      urlImage: p.urlImage || null,
+      fallbackGradient: GRADIENTS[i % GRADIENTS.length],
+    }));
+  }, [projects]);
+
   const count = projectCards.length;
   const frameRef = React.useRef<HTMLDivElement>(null);
   const cardRefs = React.useRef<(HTMLDivElement | null)[]>([]);
-  const posRef = React.useRef(3);
-  const targetRef = React.useRef(3);
+  const posRef = React.useRef(0);
+  const targetRef = React.useRef(0);
   const rafRef = React.useRef<number | null>(null);
   const dragRef = React.useRef<{
     id: number;
@@ -92,17 +66,32 @@ export function ProjectsSection() {
     t: number;
   } | null>(null);
 
-  const [selected, setSelected] = React.useState(3);
-  const selectedProject = projectCards[selected];
+  const [selected, setSelected] = React.useState(0);
+
+  // Mantém a seleção e posições válidas quando os projetos carregarem ou mudarem de tamanho
+  React.useEffect(() => {
+    if (count > 0) {
+      const initial = Math.min(3, count - 1);
+      setSelected(initial);
+      posRef.current = initial;
+      targetRef.current = initial;
+    }
+  }, [count]);
+
+  const selectedProject = count > 0 && selected < count ? projectCards[selected] : null;
 
   const indexAt = React.useCallback(
-    (pos: number) => ((Math.round(pos) % count) + count) % count,
+    (pos: number) => {
+      if (count === 0) return 0;
+      return ((Math.round(pos) % count) + count) % count;
+    },
     [count],
   );
 
   const clamp = React.useCallback((pos: number) => pos, []);
 
   const paint = React.useCallback(() => {
+    if (count === 0) return;
     const pos = posRef.current;
 
     cardRefs.current.forEach((card, index) => {
@@ -141,6 +130,8 @@ export function ProjectsSection() {
 
   const settle = React.useCallback(
     (target: number) => {
+      if (count === 0) return;
+
       if (rafRef.current !== null) {
         cancelAnimationFrame(rafRef.current);
       }
@@ -165,11 +156,12 @@ export function ProjectsSection() {
 
       rafRef.current = requestAnimationFrame(step);
     },
-    [indexAt, paint],
+    [count, indexAt, paint],
   );
 
   const goTo = React.useCallback(
     (index: number) => {
+      if (count === 0) return;
       const target =
         index + Math.round((targetRef.current - index) / count) * count;
       settle(clamp(target));
@@ -178,11 +170,16 @@ export function ProjectsSection() {
   );
 
   const nudge = React.useCallback(
-    (by: number) => settle(clamp(Math.round(targetRef.current) + by)),
-    [clamp, settle],
+    (by: number) => {
+      if (count === 0) return;
+      settle(clamp(Math.round(targetRef.current) + by));
+    },
+    [clamp, count, settle],
   );
 
   const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (count === 0) return;
+
     if (rafRef.current !== null) {
       cancelAnimationFrame(rafRef.current);
       rafRef.current = null;
@@ -202,7 +199,7 @@ export function ProjectsSection() {
   const onPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
     const drag = dragRef.current;
 
-    if (!drag || drag.id !== event.pointerId) {
+    if (!drag || drag.id !== event.pointerId || count === 0) {
       return;
     }
 
@@ -267,78 +264,114 @@ export function ProjectsSection() {
           {"—  03 // Projetos"}
         </p>
 
-        <div
-          ref={frameRef}
-          tabIndex={0}
-          role="region"
-          aria-roledescription="carousel"
-          aria-label="Projetos"
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={endDrag}
-          onPointerCancel={endDrag}
-          onKeyDown={(event) => {
-            if (event.key === "ArrowLeft") {
-              event.preventDefault();
-              nudge(-1);
-            } else if (event.key === "ArrowRight") {
-              event.preventDefault();
-              nudge(1);
-            }
-          }}
-          className="absolute top-[166px] left-1/2 h-[360px] w-[1440px] origin-top -translate-x-1/2 scale-[0.58] cursor-grab touch-pan-y outline-none active:cursor-grabbing sm:top-[190px] sm:scale-[0.75] lg:top-0 lg:scale-100"
-        >
-          {projectCards.map((project) => (
-            <div
-              key={project.id}
-              ref={(node) => {
-                cardRefs.current[project.id - 1] = node;
-              }}
-              role="group"
-              aria-roledescription="slide"
-              aria-label={`${project.id} de ${count}`}
-              aria-current={selected === project.id - 1}
-              onClick={() => goTo(project.id - 1)}
-              className="absolute top-[369px] left-[710px] size-[320px] rounded-[14px] border border-[rgba(87,122,158,0.35)] transition-[border-color,box-shadow] duration-300 will-change-transform"
-              style={{ backgroundImage: project.gradient }}
-              data-project-id={project.id}
-              data-name={`Project ${String(project.id).padStart(2, "0")}${
-                project.id === selected + 1 ? " / Featured" : ""
-              }`}
-            />
-          ))}
-        </div>
-
-        <div
-          className="absolute top-[445px] left-1/2 flex w-[320px] -translate-x-1/2 flex-col items-center gap-2 overflow-hidden text-center sm:top-[510px] lg:top-[563px]"
-          data-name="Project / Featured Details"
-        >
-          <h2 className="text-[24px] leading-normal font-semibold whitespace-nowrap text-[#f5faff]">
-            {selectedProject.title}
-          </h2>
-
-          <p className="text-[14px] leading-normal font-normal whitespace-wrap text-[#9eb2c9]">
-            {selectedProject.subtitle}
-          </p>
-
-          <p className="text-[11px] leading-normal font-medium tracking-[1.1px] whitespace-nowrap text-[#2edb85]">
-            TECNOLOGIAS UTILIZADAS
-          </p>
-
-          <div
-            className="flex items-center gap-2 overflow-hidden pt-1"
-            data-name="Project / Technologies"
-          >
-            {selectedProject.technologies.map((technology) => (
-              <span
-                key={technology}
-                className="rounded-[14px] border border-[rgba(31,148,107,0.75)] bg-[rgba(10,26,43,0.88)] px-[11px] py-1.5 text-[11px] leading-normal font-medium whitespace-nowrap text-[#b8e0d1]"
-              >
-                {technology}
-              </span>
-            ))}
+        {loading && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-[#9eb2c9] text-sm animate-pulse">
+              Carregando projetos...
+            </span>
           </div>
-        </div>
+        )}
+
+        {error && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-[#f87171] text-sm">{error}</span>
+          </div>
+        )}
+
+        {!loading && !error && count === 0 && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-[#9eb2c9] text-sm">
+              Nenhum projeto encontrado.
+            </span>
+          </div>
+        )}
+
+        {!loading && !error && count > 0 && (
+          <>
+            <div
+              ref={frameRef}
+              tabIndex={0}
+              role="region"
+              aria-roledescription="carousel"
+              aria-label="Projetos"
+              onPointerDown={onPointerDown}
+              onPointerMove={onPointerMove}
+              onPointerUp={endDrag}
+              onPointerCancel={endDrag}
+              onKeyDown={(event) => {
+                if (event.key === "ArrowLeft") {
+                  event.preventDefault();
+                  nudge(-1);
+                } else if (event.key === "ArrowRight") {
+                  event.preventDefault();
+                  nudge(1);
+                }
+              }}
+              className="absolute top-[166px] left-1/2 h-[360px] w-[1440px] origin-top -translate-x-1/2 scale-[0.58] cursor-grab touch-pan-y outline-none active:cursor-grabbing sm:top-[190px] sm:scale-[0.75] lg:top-0 lg:scale-100"
+            >
+              {projectCards.map((project, index) => (
+                <div
+                  key={project.id}
+                  ref={(node) => {
+                    cardRefs.current[index] = node;
+                  }}
+                  role="group"
+                  aria-roledescription="slide"
+                  aria-label={`${index + 1} de ${count}`}
+                  aria-current={selected === index}
+                  onClick={() => goTo(index)}
+                  className="absolute top-[369px] left-[710px] size-[320px] rounded-[14px] border border-[rgba(87,122,158,0.35)] bg-cover bg-center transition-[border-color,box-shadow] duration-300 will-change-transform"
+                  style={{
+                    backgroundImage: project.urlImage
+                      ? `url(${project.urlImage})`
+                      : project.fallbackGradient,
+                  }}
+                  data-project-id={project.id}
+                  data-name={`Project ${String(index + 1).padStart(2, "0")}${
+                    index === selected ? " / Featured" : ""
+                  }`}
+                />
+              ))}
+            </div>
+
+            {selectedProject && (
+              <div
+                className="absolute top-[445px] left-1/2 flex w-[320px] -translate-x-1/2 flex-col items-center gap-2 overflow-hidden text-center sm:top-[510px] lg:top-[563px]"
+                data-name="Project / Featured Details"
+              >
+                <h2 className="text-[24px] leading-normal font-semibold whitespace-nowrap text-[#f5faff]">
+                  {selectedProject.title}
+                </h2>
+
+                <p className="text-[14px] leading-normal font-normal whitespace-wrap text-[#9eb2c9]">
+                  {selectedProject.subtitle}
+                </p>
+
+                {selectedProject.technologies.length > 0 && (
+                  <>
+                    <p className="text-[11px] leading-normal font-medium tracking-[1.1px] whitespace-nowrap text-[#2edb85]">
+                      TECNOLOGIAS UTILIZADAS
+                    </p>
+
+                    <div
+                      className="flex items-center gap-2 overflow-hidden pt-1"
+                      data-name="Project / Technologies"
+                    >
+                      {selectedProject.technologies.map((technology) => (
+                        <span
+                          key={technology}
+                          className="rounded-[14px] border border-[rgba(31,148,107,0.75)] bg-[rgba(10,26,43,0.88)] px-[11px] py-1.5 text-[11px] leading-normal font-medium whitespace-nowrap text-[#b8e0d1]"
+                        >
+                          {technology}
+                        </span>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+          </>
+        )}
       </div>
     </section>
   );
