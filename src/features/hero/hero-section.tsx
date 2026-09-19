@@ -1,6 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import { Poppins } from "next/font/google";
 import { CarroselHero } from "./carrosel-hero";
+import { useDashboardAboutMe } from "@/features/dashboard/hooks/use-dashboard-about-me";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -8,6 +11,10 @@ const poppins = Poppins({
 });
 
 export function HeroSection() {
+  const { aboutMe } = useDashboardAboutMe();
+
+  const name = aboutMe?.nameInPortfolio || "Fellype Kenned";
+
   return (
     <section
       className={`${poppins.className} relative min-h-screen w-full overflow-hidden bg-[#090f1d] bg-[url('/imagems/Hero/image1.png')] bg-[length:auto_811px] bg-top bg-repeat-x text-white md:min-h-[875px]`}
@@ -18,7 +25,7 @@ export function HeroSection() {
         </p>
 
         <h1 className="mt-2.5 text-[42px] leading-[1.3] font-bold text-white sm:text-[50px]">
-          Fellype Kenned
+          {name}
         </h1>
 
         <p className="mt-2.5 max-w-[488px] text-[15px] leading-[1.3] font-normal text-[#e5ebf2]">

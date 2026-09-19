@@ -1,4 +1,8 @@
+"use client";
+
+import * as React from "react";
 import { Poppins } from "next/font/google";
+import { useDashboardAboutMe } from "@/features/dashboard/hooks/use-dashboard-about-me";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -11,7 +15,29 @@ const socialLinks = [
   { label: "Email", href: "mailto:contato@example.com", icon: "@" },
 ];
 
+const defaultDescriptionParagraphs = [
+  "Sou desenvolvedor Full Stack com foco em criar aplicações web modernas, rápidas e escaláveis. Gosto de unir código limpo, arquitetura sólida e design cuidadoso para entregar soluções que realmente fazem a diferença.",
+  "Tenho experiência com JavaScript, TypeScript, React, Node.js, NestJS, PostgreSQL e MongoDB, além de ferramentas que potencializam performance e a experiência do usuário.",
+  "Acredito em aprendizado contínuo, colaboração e atenção aos detalhes em cada linha de código.",
+];
+
 export function AboutSection() {
+  const { aboutMe } = useDashboardAboutMe();
+
+  const profession = aboutMe?.profession || "Desenvolvedor Full Stack";
+
+  const descriptionParagraphs = React.useMemo(() => {
+    if (!aboutMe?.descriptionAboutMe) {
+      return defaultDescriptionParagraphs;
+    }
+    const lines = aboutMe.descriptionAboutMe
+      .split("\n")
+      .map((line) => line.trim())
+      .filter(Boolean);
+
+    return lines.length > 0 ? lines : defaultDescriptionParagraphs;
+  }, [aboutMe?.descriptionAboutMe]);
+
   return (
     <section
       id="about"
@@ -24,7 +50,7 @@ export function AboutSection() {
           </p>
 
           <h2 className="max-w-[343px] text-[19px] leading-[1.43] font-normal text-[#f4f7ff] sm:text-[22px]">
-            Desenvolvedor Full Stack apaixonado por transformar ideias em{" "}
+            {profession} apaixonado por transformar ideias em{" "}
             <span className="text-[#00ff96]">experiências digitais incríveis.</span>
           </h2>
 
@@ -60,26 +86,14 @@ export function AboutSection() {
               Sobre mim
             </h2>
             <p className="mt-1 text-[14px] leading-none font-medium tracking-[0.32em] text-[#8fb6e9] uppercase">
-              Desenvolvedor Full Stack
+              {profession}
             </p>
           </div>
 
           <div className="space-y-3 text-[14px] leading-[1.43] font-normal text-[#f4f7ff]">
-            <p>
-              Sou desenvolvedor Full Stack com foco em criar aplicações web
-              modernas, rápidas e escaláveis. Gosto de unir código limpo,
-              arquitetura sólida e design cuidadoso para entregar soluções que
-              realmente fazem a diferença.
-            </p>
-            <p>
-              Tenho experiência com JavaScript, TypeScript, React, Node.js,
-              NestJS, PostgreSQL e MongoDB, além de ferramentas que potencializam
-              performance e a experiência do usuário.
-            </p>
-            <p>
-              Acredito em aprendizado contínuo, colaboração e atenção aos
-              detalhes em cada linha de código.
-            </p>
+            {descriptionParagraphs.map((paragraph, index) => (
+              <p key={index}>{paragraph}</p>
+            ))}
           </div>
         </div>
       </div>
