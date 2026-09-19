@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { Poppins, Roboto_Mono } from "next/font/google";
+import { useDashboardContacts } from "@/features/dashboard/hooks/use-dashboard-contacts";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -13,44 +14,81 @@ const robotoMono = Roboto_Mono({
   weight: ["400"],
 });
 
-const email = "contato@example.com";
-const linkedInUrl = "https://www.linkedin.com/";
-const githubUrl = "https://github.com/";
-
-const channels = [
-  {
-    title: "Email",
-    description: "Envie um email para conversarmos sobre seu projeto.",
-    icon: "@",
-    iconClass: "border-[#294f61] bg-[rgba(5,18,26,0.78)] text-[#5ce070]",
-    buttonClass: "border-[#294f6b] text-[#5ce070] hover:bg-[rgba(92,224,112,0.08)]",
-    action: "Copiar email",
-    href: `mailto:${email}`,
-  },
-  {
-    title: "LinkedIn",
-    description: "Conecte-se comigo e acompanhe minha jornada profissional.",
-    icon: "in",
-    iconClass: "border-[#295c99] bg-[rgba(5,18,36,0.78)] text-[#4da3ff]",
-    buttonClass: "border-[#265999] text-[#4da3ff] hover:bg-[rgba(77,163,255,0.08)]",
-    action: "Abrir perfil ↗",
-    href: linkedInUrl,
-  },
-  {
-    title: "GitHub",
-    description: "Confira meus repositórios e projetos de código aberto.",
-    icon: "GH",
-    iconClass: "border-[#57338c] bg-[rgba(15,9,33,0.78)] text-[#ad6bff]",
-    buttonClass: "border-[#57338c] text-[#ad6bff] hover:bg-[rgba(173,107,255,0.08)]",
-    action: "Abrir perfil ↗",
-    href: githubUrl,
-  },
-];
-
 export function ContactSection() {
+  const { contact, loading, error } = useDashboardContacts();
   const [copied, setCopied] = React.useState(false);
 
+  const email = contact?.email || "";
+  const linkedInUrl = contact?.linkedin || "";
+  const whatsappNumber = contact?.whatsapp || "";
+
+  const whatsappHref = React.useMemo(() => {
+    if (!whatsappNumber) return "";
+    const cleanNumber = whatsappNumber.replace(/\D/g, "");
+    return `https://wa.me/${cleanNumber}`;
+  }, [whatsappNumber]);
+
+  const channels = React.useMemo(() => {
+    const list: Array<{
+      title: string;
+      description: string;
+      icon: string;
+      iconClass: string;
+      buttonClass: string;
+      action: string;
+      href: string;
+      type: "email" | "link";
+    }> = [];
+
+    if (email) {
+      list.push({
+        title: "Email",
+        description: "Envie um email para conversarmos sobre seu projeto.",
+        icon: "@",
+        iconClass: "border-[#294f61] bg-[rgba(5,18,26,0.78)] text-[#5ce070]",
+        buttonClass:
+          "border-[#294f6b] text-[#5ce070] hover:bg-[rgba(92,224,112,0.08)]",
+        action: "Copiar email",
+        href: `mailto:${email}`,
+        type: "email",
+      });
+    }
+
+    if (linkedInUrl) {
+      list.push({
+        title: "LinkedIn",
+        description: "Conecte-se comigo e acompanhe minha jornada profissional.",
+        icon: "in",
+        iconClass: "border-[#295c99] bg-[rgba(5,18,36,0.78)] text-[#4da3ff]",
+        buttonClass:
+          "border-[#265999] text-[#4da3ff] hover:bg-[rgba(77,163,255,0.08)]",
+        action: "Abrir perfil ↗",
+        href: linkedInUrl.startsWith("http")
+          ? linkedInUrl
+          : `https://${linkedInUrl}`,
+        type: "link",
+      });
+    }
+
+    if (whatsappHref) {
+      list.push({
+        title: "WhatsApp",
+        description: "Mande uma mensagem direta para conversarmos em tempo real.",
+        icon: "W",
+        iconClass: "border-[#25d366]/40 bg-[rgba(5,26,16,0.78)] text-[#25d366]",
+        buttonClass:
+          "border-[#25d366]/60 text-[#25d366] hover:bg-[rgba(37,211,102,0.08)]",
+        action: "Conversar ↗",
+        href: whatsappHref,
+        type: "link",
+      });
+    }
+
+    return list;
+  }, [email, linkedInUrl, whatsappHref]);
+
   async function copyEmail() {
+    if (!email) return;
     try {
       await navigator.clipboard.writeText(email);
       setCopied(true);
@@ -93,7 +131,6 @@ export function ContactSection() {
             <span className="text-[#5ce070]">trocar ideias</span>.
           </p>
 
-
           <div
             className="mt-[28px] h-[280px] w-full max-w-[620px] overflow-hidden rounded-[10px] border border-[rgba(41,64,92,0.8)] bg-[rgba(1,5,10,0.86)] lg:mt-[27px]"
             data-node-id="45:21"
@@ -106,11 +143,17 @@ export function ContactSection() {
             >
               <p className="text-[#57e575]">portfolio:~$ contact</p>
               <br />
-              <p>{`→  Email:      ${email}`}</p>
-              <p>→  LinkedIn:   linkedin.com/in/seu-perfil</p>
-              <p>→  GitHub:     github.com/seu-usuario</p>
-              <p>→  Fuso:       UTC-3 (BRT)</p>
-              <p>→  Status:     Disponível para oportunidades e novos projetos</p>
+              {loading && <p className="animate-pulse">→ Carregando informações de contato...</p>}
+              {error && <p className="text-[#f87171]">→ {error}</p>}
+              {!loading && !error && (
+                <>
+                  <p>{`→  Email:      ${email || "Não informado"}`}</p>
+                  <p>{`→  LinkedIn:   ${linkedInUrl || "Não informado"}`}</p>
+                  <p>{`→  WhatsApp:   ${whatsappNumber || "Não informado"}`}</p>
+                  <p>→  Fuso:       UTC-3 (BRT)</p>
+                  <p>→  Status:     Disponível para oportunidades e novos projetos</p>
+                </>
+              )}
               <br />
               <p>portfolio:~$ █</p>
             </div>
@@ -122,51 +165,75 @@ export function ContactSection() {
           data-node-id="45:4"
           data-name="Contact / Channels"
         >
-          {channels.map((channel) => {
-            const isEmail = channel.title === "Email";
+          {loading && (
+            <div className="flex h-40 items-center justify-center">
+              <span className="text-sm text-[#9eb2c9] animate-pulse">
+                Carregando canais de contato...
+              </span>
+            </div>
+          )}
 
-            return (
-              <div
-                key={channel.title}
-                className="flex min-h-[135px] w-140 flex-col gap-5 overflow-hidden rounded-[10px] border border-[rgba(38,61,92,0.8)] bg-[rgba(3,8,17,0.66)] px-5 py-5 sm:flex-row sm:items-center sm:gap-[22px] sm:px-6 sm:py-[22px]"
-                data-name={`Contact Card / ${channel.title}`}
-              >
+          {error && (
+            <div className="flex h-40 items-center justify-center">
+              <span className="text-sm text-[#f87171]">{error}</span>
+            </div>
+          )}
+
+          {!loading && !error && channels.length === 0 && (
+            <div className="flex h-40 items-center justify-center">
+              <span className="text-sm text-[#9eb2c9]">
+                Nenhum canal de contato disponível no momento.
+              </span>
+            </div>
+          )}
+
+          {!loading &&
+            !error &&
+            channels.map((channel) => {
+              const isEmail = channel.type === "email";
+
+              return (
                 <div
-                  className={`flex size-[72px] shrink-0 items-center justify-center overflow-hidden rounded-[10px] border text-[26px] leading-none font-semibold ${channel.iconClass}`}
+                  key={channel.title}
+                  className="flex min-h-[135px] w-full max-w-[560px] flex-col gap-5 overflow-hidden rounded-[10px] border border-[rgba(38,61,92,0.8)] bg-[rgba(3,8,17,0.66)] px-5 py-5 sm:flex-row sm:items-center sm:gap-[22px] sm:px-6 sm:py-[22px]"
+                  data-name={`Contact Card / ${channel.title}`}
                 >
-                  {channel.icon}
-                </div>
-
-                <div className="flex min-w-0 flex-1 flex-col items-start gap-1.5 overflow-hidden">
-                  <h3 className="text-[21px] leading-normal font-semibold text-[#f7faff]">
-                    {channel.title}
-                  </h3>
-                  <p className="max-w-[330px] text-[14px] leading-[1.45] font-normal text-[#adbacf]">
-                    {channel.description}
-                  </p>
-                </div>
-
-                {isEmail ? (
-                  <button
-                    type="button"
-                    onClick={copyEmail}
-                    className={`shrink-0 rounded-[7px] border px-4 py-[11px] text-[14px] leading-none font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#5ce070] ${channel.buttonClass}`}
+                  <div
+                    className={`flex size-[72px] shrink-0 items-center justify-center overflow-hidden rounded-[10px] border text-[26px] leading-none font-semibold ${channel.iconClass}`}
                   >
-                    {copied ? "Email copiado" : channel.action}
-                  </button>
-                ) : (
-                  <a
-                    href={channel.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={`shrink-0 rounded-[7px] border px-4 py-[11px] text-[14px] leading-none font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#4da3ff] ${channel.buttonClass}`}
-                  >
-                    {channel.action}
-                  </a>
-                )}
-              </div>
-            );
-          })}
+                    {channel.icon}
+                  </div>
+
+                  <div className="flex min-w-0 flex-1 flex-col items-start gap-1.5 overflow-hidden">
+                    <h3 className="text-[21px] leading-normal font-semibold text-[#f7faff]">
+                      {channel.title}
+                    </h3>
+                    <p className="max-w-[330px] text-[14px] leading-[1.45] font-normal text-[#adbacf]">
+                      {channel.description}
+                    </p>
+                  </div>
+
+                  {isEmail ? (
+                    <button
+                      type="button"
+                      onClick={copyEmail}
+                      className={`shrink-0 rounded-[7px] border px-4 py-[11px] text-[14px] leading-none font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#5ce070] ${channel.buttonClass}`}
+                    >
+                      {copied ? "Email copiado" : channel.action}
+                    </button>
+                  ) : (
+                    <a
+                      href={channel.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      className={`shrink-0 rounded-[7px] border px-4 py-[11px] text-[14px] leading-none font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#4da3ff] ${channel.buttonClass}`}
+                    >
+                      {channel.action}
+                    </a>
+                  )}
+                </div>
+              );
+            })}
         </div>
       </div>
     </section>
