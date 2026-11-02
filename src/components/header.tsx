@@ -178,19 +178,17 @@ export function Header() {
 
   return (
     <header
-      className={`${poppins.className} fixed left-0 top-0 z-50 flex min-h-[78px] w-full items-center px-6 py-5 text-[#f0f2fa] transition-all duration-300 sm:px-10 lg:px-42.5 ${
-        hasScrolled
-          ? "border-b border-white/10 bg-[#08110c]/55 shadow-[0_12px_40px_rgba(0,0,0,0.22)] backdrop-blur-xl"
-          : "bg-transparent"
-      }`}
+      className={`${poppins.className} fixed left-0 top-0 z-50 flex min-h-[78px] w-full items-center px-6 py-5 text-[#f0f2fa] transition-all duration-300 sm:px-10 lg:px-42.5 ${hasScrolled
+        ? "bg-transparent"
+        : "bg-transparent"
+        }`}
     >
       <Link
         href="/"
-        className={`flex shrink-0 items-center gap-2 font-bold leading-none transition-all duration-500 ease-out ${
-          hasScrolled
-            ? "pointer-events-none -translate-x-4 scale-95 opacity-0"
-            : "translate-x-0 scale-100 opacity-100"
-        }`}
+        className={`flex shrink-0 items-center gap-2 font-bold leading-none transition-all duration-500 ease-out ${hasScrolled
+          ? "pointer-events-none -translate-x-4 scale-95 opacity-0"
+          : "translate-x-0 scale-100 opacity-100"
+          }`}
         aria-label="DevPro home"
         data-node-id="3:4"
         data-name="Logo"
@@ -203,11 +201,10 @@ export function Header() {
 
       <nav
         aria-label="Primary navigation"
-        className={`absolute top-1/2 -translate-y-1/2 transition-all duration-500 ease-out ${
-          hasScrolled
-            ? "left-1/2 -translate-x-1/2"
-            : "right-6 translate-x-0 sm:right-10 lg:right-[10.625rem]"
-        }`}
+        className={`absolute top-1/2 -translate-y-1/2 transition-all duration-500 ease-out ${hasScrolled
+          ? "left-1/2 -translate-x-1/2"
+          : "right-6 translate-x-0 sm:right-10 lg:right-[10.625rem]"
+          }`}
       >
         <SlideTabs
           activeHref={activeHref}

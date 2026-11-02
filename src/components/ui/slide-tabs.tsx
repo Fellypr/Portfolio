@@ -74,7 +74,7 @@ export function SlideTabs({
   return (
     <ul
       onMouseLeave={moveToSelectedTab}
-      className="relative hidden w-fit items-center rounded-full border border-[#19b630] bg-[#060b1441] p-1 text-sm leading-none backdrop-blur sm:flex"
+      className="relative hidden w-fit items-center rounded-full border-2 border-[#43af04] bg-[#060b1441] p-1 text-sm leading-none backdrop-blur sm:flex"
     >
       {items.map((item, index) => (
         <Tab
@@ -141,7 +141,7 @@ function Cursor({ position }: { position: CursorPosition }) {
   return (
     <motion.li
       animate={position}
-      className="absolute z-0 h-7 rounded-full border-[#622abd] border-2 bg-[#17181a96] md:h-8"
+      className="absolute z-0 h-7 rounded-full border-[#c0c0c0] border bg-[#17181a96] md:h-8"
     />
   );
 }

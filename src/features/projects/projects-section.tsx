@@ -49,6 +49,16 @@ export function ProjectsSection() {
         : [],
       urlImage: p.urlImage || null,
       fallbackGradient: GRADIENTS[i % GRADIENTS.length],
+      websiteUrl:
+        ((p as unknown as Record<string, unknown>).websiteUrl as string) ||
+        ((p as unknown as Record<string, unknown>).projectUrl as string) ||
+        ((p as unknown as Record<string, unknown>).url as string) ||
+        "#",
+      githubUrl:
+        ((p as unknown as Record<string, unknown>).githubUrl as string) ||
+        ((p as unknown as Record<string, unknown>).github as string) ||
+        ((p as unknown as Record<string, unknown>).repositoryUrl as string) ||
+        "https://github.com",
     }));
   }, [projects]);
 
@@ -325,8 +335,8 @@ export function ProjectsSection() {
                   aria-label={`${index + 1} de ${count}`}
                   aria-current={selected === index}
                   onClick={() => goTo(index)}
-                  className="absolute top-[369px] left-[710px] max-w-[250px] max-h-[200px]
-                  min-w-[350px] min-h-[220px] rounded-[14px] border border-[rgba(87,122,158,0.35)] bg-no-repeat bg-cover bg-center transition-[border-color,box-shadow] duration-300 will-change-transform"
+                  className="absolute top-[369px] left-[710px] max-w-[350px] max-h-[250px]
+                  min-w-[450px] min-h-[250px] rounded-[14px] border border-[rgba(66,66,66,0.35)] bg-no-repeat bg-cover bg-center transition-[border-color,box-shadow] duration-300 will-change-transform"
       
                   data-project-id={project.id}
                   data-name={`Project ${String(index + 1).padStart(2, "0")}${
@@ -338,7 +348,7 @@ export function ProjectsSection() {
 
             {selectedProject && (
               <div
-                className="absolute top-[445px] left-1/2 flex w-[420px] -translate-x-1/2 flex-col items-center gap-2 overflow-hidden text-center sm:top-[510px] lg:top-[563px] p-2"
+                className="absolute top-[245px] left-1/2 flex w-205 -translate-x-1/2 flex-col items-center gap-2 overflow-hidden text-center sm:top-[310px] lg:top-[500px] p-2"
                 data-name="Project / Featured Details"
               >
                 <h2 className="text-[24px] leading-normal font-semibold whitespace-nowrap text-[#f5faff]">
@@ -370,6 +380,58 @@ export function ProjectsSection() {
                     </div>
                   </>
                 )}
+
+                <div
+                  className="mt-2 flex items-center justify-center gap-3 pt-2"
+                  data-name="Project / Actions"
+                >
+                  <a
+                    href={selectedProject.websiteUrl || "#"}
+                    target={
+                      selectedProject.websiteUrl && selectedProject.websiteUrl !== "#"
+                        ? "_blank"
+                        : undefined
+                    }
+                    rel="noopener noreferrer"
+                    className="flex h-[38px] items-center justify-center gap-2 rounded-[8px] bg-[#2ed657] px-4 text-[13px] font-medium text-[#05140a] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#3af06a] hover:shadow-[0_0_16px_rgba(46,214,87,0.35)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2ed657]"
+                  >
+                    <span>Visitar Site</span>
+                    <svg
+                      className="size-4 shrink-0"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
+                      />
+                    </svg>
+                  </a>
+
+                  <a
+                    href={selectedProject.githubUrl || "https://github.com"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex h-[38px] items-center justify-center gap-2 rounded-[8px] border border-[#374151] bg-[#24292e] px-4 text-[13px] font-medium text-[#f0f6fc] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#40f26e] hover:bg-[#2f363d] hover:text-white hover:shadow-[0_0_16px_rgba(36,41,46,0.5)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#40f26e]"
+                  >
+                    <svg
+                      className="size-4 shrink-0 fill-current text-white"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                      />
+                    </svg>
+                    <span>GitHub</span>
+                  </a>
+                </div>
               </div>
             )}
           </>
