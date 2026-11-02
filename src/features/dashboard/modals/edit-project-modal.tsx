@@ -26,6 +26,8 @@ export function EditProjectModal({
   const [technologies, setTechnologies] = useState("");
   const [status, setStatus] = useState("Publicado");
   const [urlImage, setUrlImage] = useState("");
+  const [websiteUrl, setWebsiteUrl] = useState("");
+  const [githubUrl, setGithubUrl] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -35,6 +37,8 @@ export function EditProjectModal({
       setTechnologies(project.technologies || "");
       setStatus(project.status || "Publicado");
       setUrlImage(project.urlImage || "");
+      setWebsiteUrl(project.websiteUrl || "");
+      setGithubUrl(project.githubUrl || "");
       setError(null);
     }
   }, [project]);
@@ -77,6 +81,8 @@ export function EditProjectModal({
           technologies: technologies.trim(),
           status: status.trim(),
           urlImage: urlImage.trim() || "default-project-thumbnail",
+          websiteUrl: websiteUrl.trim() || null,
+          githubUrl: githubUrl.trim() || null,
         });
       }
       onClose();
@@ -177,6 +183,32 @@ export function EditProjectModal({
                     required
                   />
                 </label>
+
+                <div className="grid grid-cols-1 gap-[14px] sm:grid-cols-2">
+                  <label className="block">
+                    <span className="mb-[8px] block text-[11px] leading-none font-medium text-[#94a3b8]">
+                      Link do Site (Deploy)
+                    </span>
+                    <input
+                      className="h-[42px] w-full rounded-[8px] border border-[#334155] bg-[#0f172a] px-[13px] text-[13px] text-[#f8fafc] outline-none transition placeholder:text-[#64748b] focus:border-[#5547f5] focus:ring-2 focus:ring-[#5547f5]/25"
+                      value={websiteUrl}
+                      onChange={(e) => setWebsiteUrl(e.target.value)}
+                      placeholder="https://meuprojeto.com"
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="mb-[8px] block text-[11px] leading-none font-medium text-[#94a3b8]">
+                      Link do GitHub
+                    </span>
+                    <input
+                      className="h-[42px] w-full rounded-[8px] border border-[#334155] bg-[#0f172a] px-[13px] text-[13px] text-[#f8fafc] outline-none transition placeholder:text-[#64748b] focus:border-[#5547f5] focus:ring-2 focus:ring-[#5547f5]/25"
+                      value={githubUrl}
+                      onChange={(e) => setGithubUrl(e.target.value)}
+                      placeholder="https://github.com/usuario/repo"
+                    />
+                  </label>
+                </div>
 
                 <div className="grid grid-cols-1 gap-[14px] sm:grid-cols-[1fr_170px]">
                   <label className="block">

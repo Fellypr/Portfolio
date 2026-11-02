@@ -49,16 +49,8 @@ export function ProjectsSection() {
         : [],
       urlImage: p.urlImage || null,
       fallbackGradient: GRADIENTS[i % GRADIENTS.length],
-      websiteUrl:
-        ((p as unknown as Record<string, unknown>).websiteUrl as string) ||
-        ((p as unknown as Record<string, unknown>).projectUrl as string) ||
-        ((p as unknown as Record<string, unknown>).url as string) ||
-        "#",
-      githubUrl:
-        ((p as unknown as Record<string, unknown>).githubUrl as string) ||
-        ((p as unknown as Record<string, unknown>).github as string) ||
-        ((p as unknown as Record<string, unknown>).repositoryUrl as string) ||
-        "https://github.com",
+      websiteUrl: p.websiteUrl || "#",
+      githubUrl: p.githubUrl || "https://github.com",
     }));
   }, [projects]);
 

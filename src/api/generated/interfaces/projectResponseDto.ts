@@ -17,4 +17,8 @@ export interface ProjectResponseDto {
   status?: string | null;
   /** @nullable */
   technologies?: string | null;
+  /** @nullable */
+  websiteUrl?: string | null;
+  /** @nullable */
+  githubUrl?: string | null;
 }

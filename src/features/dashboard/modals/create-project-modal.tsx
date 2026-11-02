@@ -24,6 +24,8 @@ export function CreateProjectModal({
   const [technologies, setTechnologies] = useState("");
   const [status, setStatus] = useState("Publicado");
   const [urlImage, setUrlImage] = useState("");
+  const [websiteUrl, setWebsiteUrl] = useState("");
+  const [githubUrl, setGithubUrl] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -33,6 +35,8 @@ export function CreateProjectModal({
       setTechnologies("");
       setStatus("Publicado");
       setUrlImage("");
+      setWebsiteUrl("");
+      setGithubUrl("");
       setError(null);
     }
   }, [isOpen]);
@@ -72,6 +76,8 @@ export function CreateProjectModal({
           technologies: technologies.trim() || "Geral",
           status: status.trim(),
           urlImage: urlImage.trim() || "default-thumbnail",
+          websiteUrl: websiteUrl.trim() || null,
+          githubUrl: githubUrl.trim() || null,
         });
       }
       onClose();
@@ -140,6 +146,32 @@ export function CreateProjectModal({
                     placeholder="https://..."
                   />
                 </label>
+
+                <div className="grid grid-cols-1 gap-[14px] sm:grid-cols-2">
+                  <label className="block">
+                    <span className="mb-[8px] block text-[11px] leading-none font-medium text-[#94a3b8]">
+                      Link do Site
+                    </span>
+                    <input
+                      className="h-[42px] w-full rounded-[8px] border border-[#334155] bg-[#0f172a] px-[13px] text-[13px] text-[#f8fafc] outline-none transition placeholder:text-[#64748b] focus:border-[#5547f5] focus:ring-2 focus:ring-[#5547f5]/25"
+                      value={websiteUrl}
+                      onChange={(e) => setWebsiteUrl(e.target.value)}
+                      placeholder="https://exemplo.com"
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="mb-[8px] block text-[11px] leading-none font-medium text-[#94a3b8]">
+                      Link do GitHub
+                    </span>
+                    <input
+                      className="h-[42px] w-full rounded-[8px] border border-[#334155] bg-[#0f172a] px-[13px] text-[13px] text-[#f8fafc] outline-none transition placeholder:text-[#64748b] focus:border-[#5547f5] focus:ring-2 focus:ring-[#5547f5]/25"
+                      value={githubUrl}
+                      onChange={(e) => setGithubUrl(e.target.value)}
+                      placeholder="https://github.com/usuario/repo"
+                    />
+                  </label>
+                </div>
               </div>
 
               <div className="space-y-[17px]">
@@ -162,6 +194,32 @@ export function CreateProjectModal({
                   />
                 </label>
 
+                <div className="grid grid-cols-1 gap-[14px] sm:grid-cols-2">
+                  <label className="block">
+                    <span className="mb-[8px] block text-[11px] leading-none font-medium text-[#94a3b8]">
+                      Link do Site
+                    </span>
+                    <input
+                      className="h-[42px] w-full rounded-[8px] border border-[#334155] bg-[#0f172a] px-[13px] text-[13px] text-[#f8fafc] outline-none transition placeholder:text-[#64748b] focus:border-[#5547f5] focus:ring-2 focus:ring-[#5547f5]/25"
+                      value={websiteUrl}
+                      onChange={(e) => setWebsiteUrl(e.target.value)}
+                      placeholder="https://exemplo.com"
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="mb-[8px] block text-[11px] leading-none font-medium text-[#94a3b8]">
+                      Link do GitHub
+                    </span>
+                    <input
+                      className="h-[42px] w-full rounded-[8px] border border-[#334155] bg-[#0f172a] px-[13px] text-[13px] text-[#f8fafc] outline-none transition placeholder:text-[#64748b] focus:border-[#5547f5] focus:ring-2 focus:ring-[#5547f5]/25"
+                      value={githubUrl}
+                      onChange={(e) => setGithubUrl(e.target.value)}
+                      placeholder="https://github.com/usuario/repo"
+                    />
+                  </label>
+                </div>
+
                 <label className="block">
                   <span className="mb-[8px] block text-[11px] leading-none font-medium text-[#94a3b8]">
                     Descrição
@@ -174,6 +232,58 @@ export function CreateProjectModal({
                     required
                   />
                 </label>
+
+                <div className="grid grid-cols-1 gap-[14px] sm:grid-cols-2">
+                  <label className="block">
+                    <span className="mb-[8px] block text-[11px] leading-none font-medium text-[#94a3b8]">
+                      Link do Site (Deploy)
+                    </span>
+                    <input
+                      className="h-[42px] w-full rounded-[8px] border border-[#334155] bg-[#0f172a] px-[13px] text-[13px] text-[#f8fafc] outline-none transition placeholder:text-[#64748b] focus:border-[#5547f5] focus:ring-2 focus:ring-[#5547f5]/25"
+                      value={websiteUrl}
+                      onChange={(e) => setWebsiteUrl(e.target.value)}
+                      placeholder="https://meuprojeto.com"
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="mb-[8px] block text-[11px] leading-none font-medium text-[#94a3b8]">
+                      Link do GitHub
+                    </span>
+                    <input
+                      className="h-[42px] w-full rounded-[8px] border border-[#334155] bg-[#0f172a] px-[13px] text-[13px] text-[#f8fafc] outline-none transition placeholder:text-[#64748b] focus:border-[#5547f5] focus:ring-2 focus:ring-[#5547f5]/25"
+                      value={githubUrl}
+                      onChange={(e) => setGithubUrl(e.target.value)}
+                      placeholder="https://github.com/usuario/repo"
+                    />
+                  </label>
+                </div>
+
+                <div className="grid grid-cols-1 gap-[14px] sm:grid-cols-2">
+                  <label className="block">
+                    <span className="mb-[8px] block text-[11px] leading-none font-medium text-[#94a3b8]">
+                      Link do Site
+                    </span>
+                    <input
+                      className="h-[42px] w-full rounded-[8px] border border-[#334155] bg-[#0f172a] px-[13px] text-[13px] text-[#f8fafc] outline-none transition placeholder:text-[#64748b] focus:border-[#5547f5] focus:ring-2 focus:ring-[#5547f5]/25"
+                      value={websiteUrl}
+                      onChange={(e) => setWebsiteUrl(e.target.value)}
+                      placeholder="https://exemplo.com"
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="mb-[8px] block text-[11px] leading-none font-medium text-[#94a3b8]">
+                      Link do GitHub
+                    </span>
+                    <input
+                      className="h-[42px] w-full rounded-[8px] border border-[#334155] bg-[#0f172a] px-[13px] text-[13px] text-[#f8fafc] outline-none transition placeholder:text-[#64748b] focus:border-[#5547f5] focus:ring-2 focus:ring-[#5547f5]/25"
+                      value={githubUrl}
+                      onChange={(e) => setGithubUrl(e.target.value)}
+                      placeholder="https://github.com/usuario/repo"
+                    />
+                  </label>
+                </div>
 
                 <div className="grid grid-cols-1 gap-[14px] sm:grid-cols-[1fr_170px]">
                   <label className="block">
@@ -188,6 +298,32 @@ export function CreateProjectModal({
                     />
                   </label>
 
+                <div className="grid grid-cols-1 gap-[14px] sm:grid-cols-2">
+                  <label className="block">
+                    <span className="mb-[8px] block text-[11px] leading-none font-medium text-[#94a3b8]">
+                      Link do Site
+                    </span>
+                    <input
+                      className="h-[42px] w-full rounded-[8px] border border-[#334155] bg-[#0f172a] px-[13px] text-[13px] text-[#f8fafc] outline-none transition placeholder:text-[#64748b] focus:border-[#5547f5] focus:ring-2 focus:ring-[#5547f5]/25"
+                      value={websiteUrl}
+                      onChange={(e) => setWebsiteUrl(e.target.value)}
+                      placeholder="https://exemplo.com"
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="mb-[8px] block text-[11px] leading-none font-medium text-[#94a3b8]">
+                      Link do GitHub
+                    </span>
+                    <input
+                      className="h-[42px] w-full rounded-[8px] border border-[#334155] bg-[#0f172a] px-[13px] text-[13px] text-[#f8fafc] outline-none transition placeholder:text-[#64748b] focus:border-[#5547f5] focus:ring-2 focus:ring-[#5547f5]/25"
+                      value={githubUrl}
+                      onChange={(e) => setGithubUrl(e.target.value)}
+                      placeholder="https://github.com/usuario/repo"
+                    />
+                  </label>
+                </div>
+
                   <label className="block">
                     <span className="mb-[8px] block text-[11px] leading-none font-medium text-[#94a3b8]">
                       Status
@@ -201,6 +337,32 @@ export function CreateProjectModal({
                       <option value="Rascunho">Rascunho</option>
                     </select>
                   </label>
+
+                <div className="grid grid-cols-1 gap-[14px] sm:grid-cols-2">
+                  <label className="block">
+                    <span className="mb-[8px] block text-[11px] leading-none font-medium text-[#94a3b8]">
+                      Link do Site
+                    </span>
+                    <input
+                      className="h-[42px] w-full rounded-[8px] border border-[#334155] bg-[#0f172a] px-[13px] text-[13px] text-[#f8fafc] outline-none transition placeholder:text-[#64748b] focus:border-[#5547f5] focus:ring-2 focus:ring-[#5547f5]/25"
+                      value={websiteUrl}
+                      onChange={(e) => setWebsiteUrl(e.target.value)}
+                      placeholder="https://exemplo.com"
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="mb-[8px] block text-[11px] leading-none font-medium text-[#94a3b8]">
+                      Link do GitHub
+                    </span>
+                    <input
+                      className="h-[42px] w-full rounded-[8px] border border-[#334155] bg-[#0f172a] px-[13px] text-[13px] text-[#f8fafc] outline-none transition placeholder:text-[#64748b] focus:border-[#5547f5] focus:ring-2 focus:ring-[#5547f5]/25"
+                      value={githubUrl}
+                      onChange={(e) => setGithubUrl(e.target.value)}
+                      placeholder="https://github.com/usuario/repo"
+                    />
+                  </label>
+                </div>
                 </div>
               </div>
 

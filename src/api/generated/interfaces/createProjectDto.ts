@@ -28,4 +28,8 @@ export interface CreateProjectDto {
      * @maxLength 300
      */
   technologies: string;
+  /** @nullable */
+  websiteUrl?: string | null;
+  /** @nullable */
+  githubUrl?: string | null;
 }

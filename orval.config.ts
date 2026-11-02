@@ -3,7 +3,7 @@ import { defineConfig } from 'orval';
 export default defineConfig({
   api: {
     input: {
-      target: 'http://localhost:5242/swagger/v1/swagger.json',
+      target: 'http://localhost:5000/swagger/v1/swagger.json',
     },
     output: {
       mode: 'tags-split',                      // tags-split ele em especifico, separa os endpoints por tags
