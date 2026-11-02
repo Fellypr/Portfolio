@@ -68,17 +68,15 @@ export function ProjectsSection() {
     t: number;
   } | null>(null);
 
-  const [selected, setSelected] = React.useState(0);
+  const [selectedOverride, setSelectedOverride] = React.useState<number | null>(null);
 
-  // Mantém a seleção e posições válidas quando os projetos carregarem ou mudarem de tamanho
-  React.useEffect(() => {
-    if (count > 0) {
-      const initial = Math.min(3, count - 1);
-      setSelected(initial);
-      posRef.current = initial;
-      targetRef.current = initial;
+  const selected = React.useMemo(() => {
+    if (count === 0) return 0;
+    if (selectedOverride !== null && selectedOverride < count) {
+      return selectedOverride;
     }
-  }, [count]);
+    return Math.min(3, count - 1);
+  }, [count, selectedOverride]);
 
   const selectedProject = count > 0 && selected < count ? projectCards[selected] : null;
 
@@ -139,7 +137,7 @@ export function ProjectsSection() {
       }
 
       targetRef.current = target;
-      setSelected(indexAt(target));
+      setSelectedOverride(indexAt(target));
 
       const step = () => {
         const remaining = target - posRef.current;
@@ -213,7 +211,7 @@ export function ProjectsSection() {
 
     const index = indexAt(posRef.current);
     if (index !== selected) {
-      setSelected(index);
+      setSelectedOverride(index);
     }
 
     paint();
@@ -232,6 +230,11 @@ export function ProjectsSection() {
   };
 
   useIsoLayoutEffect(() => {
+    if (count > 0) {
+      const initial = Math.min(3, count - 1);
+      posRef.current = initial;
+      targetRef.current = initial;
+    }
     paint();
 
     const frame = frameRef.current;
@@ -243,7 +246,7 @@ export function ProjectsSection() {
     observer.observe(frame);
 
     return () => observer.disconnect();
-  }, [paint]);
+  }, [count, paint]);
 
   React.useEffect(
     () => () => {
