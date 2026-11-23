@@ -1,52 +1,34 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import React from 'react';
 import { FormInput } from '@/components/ui/form-input';
-import { loginSchema, type LoginFormData } from './schemas/login-schema';
+import { useLoginForm } from './hooks/use-login-form';
+import type { AuthResponseDto } from '@/api/generated/interfaces';
 
 export interface LoginScreenProps {
-  onSubmitSuccess?: (data: LoginFormData) => void;
+  redirectTo?: string;
+  onSubmitSuccess?: (data: AuthResponseDto) => void;
   onNavigateToRegister?: () => void;
   onNavigateToForgotPassword?: () => void;
 }
 
+
 export function LoginScreen({
+  redirectTo = '/174464Fe',
   onSubmitSuccess,
   onNavigateToRegister,
   onNavigateToForgotPassword,
 }: LoginScreenProps) {
-  const [submissionError, setSubmissionError] = useState<string | null>(null);
-
   const {
     register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-    reset,
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-    },
+    onSubmit,
+    errors,
+    isLoading,
+    submissionError,
+  } = useLoginForm({
+    redirectTo,
+    onSubmitSuccess,
   });
-
-  const handleFormSubmit = async (data: LoginFormData) => {
-    setSubmissionError(null);
-    try {
-      if (onSubmitSuccess) {
-        await onSubmitSuccess(data);
-      }
-      reset();
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        setSubmissionError(err.message);
-      } else {
-        setSubmissionError('Ocorreu um erro inesperado ao realizar o login.');
-      }
-    }
-  };
 
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-zinc-950 p-4">
@@ -69,13 +51,13 @@ export function LoginScreen({
           </div>
         )}
 
-        <form onSubmit={handleSubmit(handleFormSubmit)} noValidate className="space-y-5">
+        <form onSubmit={onSubmit} noValidate className="space-y-5">
           <FormInput
             label="E-mail"
             type="email"
             placeholder="seu@email.com"
             autoComplete="email"
-            disabled={isSubmitting}
+            disabled={isLoading}
             error={errors.email?.message}
             {...register('email')}
           />
@@ -86,7 +68,7 @@ export function LoginScreen({
               type="password"
               placeholder="••••••••"
               autoComplete="current-password"
-              disabled={isSubmitting}
+              disabled={isLoading}
               error={errors.password?.message}
               {...register('password')}
             />
@@ -95,7 +77,7 @@ export function LoginScreen({
                 <button
                   type="button"
                   onClick={onNavigateToForgotPassword}
-                  disabled={isSubmitting}
+                  disabled={isLoading}
                   className="text-xs font-medium text-emerald-400 hover:text-emerald-300 disabled:opacity-50"
                 >
                   Esqueceu a senha?
@@ -106,10 +88,10 @@ export function LoginScreen({
 
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isLoading}
             className="flex w-full items-center justify-center rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors duration-150 hover:bg-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:ring-offset-2 focus:ring-offset-zinc-950 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {isSubmitting ? (
+            {isLoading ? (
               <span className="inline-flex items-center gap-2">
                 <svg
                   className="h-4 w-4 animate-spin text-white"
@@ -145,7 +127,7 @@ export function LoginScreen({
             <button
               type="button"
               onClick={onNavigateToRegister}
-              disabled={isSubmitting}
+              disabled={isLoading}
               className="font-medium text-emerald-400 hover:text-emerald-300 disabled:opacity-50"
             >
               Criar conta
