@@ -1,36 +1,125 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Portfolio Frontend
 
-## Getting Started
+Aplicação web moderna desenvolvida com **Next.js (App Router)**, **React 19**, **Tailwind CSS v4** e integração tipada via **Orval (OpenAPI/Swagger)**. O projeto reúne a vitrine pública do portfólio profissional e uma área administrativa (Dashboard) para gestão dinâmica de conteúdos como dados pessoais, projetos e contatos.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🚀 Tecnologias e Stack
+
+| Camada / Função | Tecnologia | Versão |
+| :--- | :--- | :--- |
+| **Framework** | Next.js (App Router) | 16.3.0 |
+| **UI Library** | React | 19.2.8 |
+| **Linguagem** | TypeScript | ^5 |
+| **Estilização** | Tailwind CSS & PostCSS | ^4 |
+| **Animações** | Framer Motion | ^13.1.1 |
+| **Formulários & Validação** | React Hook Form & Zod | ^7.92.0 / ^4.6.7 |
+| **Data Fetching / State** | TanStack React Query & Custom Fetch | ^5.102.8 |
+| **Geração de Cliente API** | Orval (OpenAPI 3.0 / Swagger) | ^8.30.0 |
+| **Ícones** | React Icons | ^5.7.0 |
+
+---
+
+## 📁 Estrutura do Projeto
+
+```text
+Portfolio/
+├── public/                 # Imagens, ícones de tecnologias e assets estáticos
+├── src/
+│   ├── api/                # Camada de comunicação HTTP
+│   │   ├── custom-fetch.ts # Mutator HTTP customizado, resolução de JWT e erros
+│   │   └── generated/      # Código gerado via Orval (hooks e interfaces DTO)
+│   ├── app/                # Next.js App Router (Páginas, Layouts e Route Handlers)
+│   │   ├── 174464Fe/       # Rota protegida do Dashboard Administrativo
+│   │   ├── api/auth/       # Route handlers locais (ex: /api/auth/session)
+│   │   ├── login/          # Tela de autenticação administrativa
+│   │   ├── layout.tsx      # Layout raiz com fontes e estilos globais
+│   │   └── page.tsx        # Landing Page pública do portfólio
+│   ├── components/         # Componentes compartilhados (Header, Footer, UI base)
+│   ├── features/           # Módulos organizados por domínio (Feature-driven)
+│   │   ├── about/          # Seção Sobre Mim
+│   │   ├── auth/           # Login, hooks de sessão, validação e schemas
+│   │   ├── contact/        # Seção de Contato e formulários
+│   │   ├── dashboard/      # Painel de gestão, modais e serviços CRUD
+│   │   ├── hero/           # Hero section e carrossel de introdução
+│   │   ├── projects/       # Listagem e vitrine de projetos
+│   │   └── stacks/         # Apresentação do ecossistema de tecnologias e órbita
+│   └── middleware.ts       # Proteção perimetral de rotas e controle de sessão
+├── orval.config.ts         # Configuração do gerador OpenAPI
+└── package.json            # Scripts e dependências
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ⚙️ Variáveis de Ambiente
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Crie um arquivo `.env.local` na raiz do projeto `Portfolio/` contendo:
 
-## Learn More
+```env
+# URL base da API Backend (ex: ASP.NET Core Web API)
+NEXT_PUBLIC_API_URL=http://localhost:5000
+```
 
-To learn more about Next.js, take a look at the following resources:
+> [!NOTE]
+> Caso `NEXT_PUBLIC_API_URL` não seja especificada, o cliente HTTP (`custom-fetch.ts`) utiliza `http://localhost:5000` como fallback padrão de desenvolvimento.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🛠️ Instalação e Execução
 
-## Deploy on Vercel
+### Pré-requisitos
+- **Node.js** >= 20.x
+- **npm**, **pnpm** ou **yarn**
+- API Backend em execução em `http://localhost:5000` (ou endereço configurado na env)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Passos
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **Instale as dependências:**
+   ```bash
+   npm install
+   ```
+
+2. **Inicie o servidor de desenvolvimento:**
+   ```bash
+   npm run dev
+   ```
+   Acesse a aplicação em [http://localhost:3000](http://localhost:3000).
+
+3. **Compilar para produção:**
+   ```bash
+   npm run build
+   npm run start
+   ```
+
+---
+
+## 🔄 Geração de Código da API (Orval)
+
+O projeto consome a documentação OpenAPI/Swagger do backend para manter as tipagens e hooks de requisição sempre atualizados e sincronizados.
+
+- **Regenerar hooks e tipos:**
+  ```bash
+  npm run api:generate
+  ```
+- **Modo observador (watch):**
+  ```bash
+  npm run api:watch
+  ```
+
+As definições são geradas em `src/api/generated/` e utilizam o mutator `customFetch` para injeção automática de Bearer Token e interceptação de erros HTTP.
+
+---
+
+## 🔒 Segurança e Autenticação
+
+- **Rota Protegida (`/174464Fe`):** Acesso administrativo protegido simultaneamente no nível de borda (`middleware.ts`) e no Server Component (`/174464Fe/page.tsx`).
+- **Token de Sessão:** Armazenado via cookie `auth_session_token` e espelhado em `localStorage` para compatibilidade total entre requisições Client-Side e Server-Side Rendering (SSR).
+- **Proteção contra Open Redirect:** O fluxo de redirecionamento pós-login valida e sanitiza a URL de destino contra ataques de manipulação de parâmetros.
+
+---
+
+## 📚 Documentações Complementares
+
+Para aprofundar na arquitetura e integração:
+- Consulte [ARCHITECTURE.md](./docs/ARCHITECTURE.md) para detalhes de design de software e fluxo de dados.
+- Consulte [API.md](./docs/API.md) para o contrato de integração com a API e serviços.

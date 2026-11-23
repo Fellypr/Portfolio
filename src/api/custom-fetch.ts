@@ -31,6 +31,35 @@ export class ApiError<T = unknown> extends Error {
   }
 }
 
+/**
+ * Recupera o token de autenticação de forma compatível com Browser e SSR.
+ */
+async function resolveAuthToken(): Promise<string | null> {
+  if (typeof window !== 'undefined') {
+    // 1. Tenta localStorage
+    const local = localStorage.getItem('auth_token');
+    if (local) return local;
+
+    // 2. Tenta cookie do navegador
+    const match = document.cookie
+      .split('; ')
+      .find((row) => row.startsWith('auth_session_token='));
+    if (match) {
+      return decodeURIComponent(match.split('=')[1]);
+    }
+    return null;
+  }
+
+  // Contexto Server-Side (Next.js Server Components / Server Actions)
+  try {
+    const { cookies } = await import('next/headers');
+    const cookieStore = await cookies();
+    return cookieStore.get('auth_session_token')?.value || null;
+  } catch {
+    return null;
+  }
+}
+
 export async function customFetch<T>(
   url: string,
   options?: RequestInit
@@ -41,6 +70,14 @@ export async function customFetch<T>(
   const headers = new Headers(options?.headers);
   if (!headers.has('Content-Type') && options?.body && !(options.body instanceof FormData)) {
     headers.set('Content-Type', 'application/json');
+  }
+
+  // Injeção transparente de Authorization: Bearer <token>
+  if (!headers.has('Authorization')) {
+    const token = await resolveAuthToken();
+    if (token) {
+      headers.set('Authorization', `Bearer ${token}`);
+    }
   }
 
   const response = await fetch(fullUrl, {
@@ -61,6 +98,11 @@ export async function customFetch<T>(
   }
 
   if (!response.ok) {
+    // Tratamento defensivo em 401 Unauthorized
+    if (response.status === 401 && typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('auth:unauthorized'));
+    }
+
     throw new ApiError(
       response.status,
       response.statusText,

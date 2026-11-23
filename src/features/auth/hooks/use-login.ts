@@ -16,6 +16,18 @@ export interface UseLoginOptions {
   onError?: (error: Error) => void;
 }
 
+// Sanitização contra ataques de Open Redirect
+function getSafeRedirectUrl(targetUrl: string | undefined | null, fallback: string): string {
+  if (!targetUrl) return fallback;
+  if (
+    targetUrl.startsWith('/') &&
+    !targetUrl.startsWith('//') &&
+    !targetUrl.includes('\\')
+  ) {
+    return targetUrl;
+  }
+  return fallback;
+}
 
 export function useLogin(options?: UseLoginOptions) {
   const [isPending, setIsPending] = useState(false);
@@ -53,15 +65,35 @@ export function useLogin(options?: UseLoginOptions) {
         }
 
         const authData = response.data as AuthResponseDto;
+        const jwtToken = authData?.token;
+
+        // Persistência síncrona e assíncrona do token para Client e Server
+        if (jwtToken) {
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('auth_token', jwtToken);
+            document.cookie = `auth_session_token=${encodeURIComponent(jwtToken)}; path=/; max-age=${60 * 60 * 8}; SameSite=Lax`;
+          }
+
+          try {
+            await fetch('/api/auth/session', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ token: jwtToken }),
+            });
+          } catch {
+            // Cookie local já fixado como fallback
+          }
+        }
+
         setData(authData);
 
         if (options?.onSuccess) {
           options.onSuccess(authData);
         }
 
-        if (options?.redirectTo) {
-          router.push(options.redirectTo);
-        }
+        const finalRedirect = getSafeRedirectUrl(options?.redirectTo, '/174464Fe');
+        router.push(finalRedirect);
+        router.refresh();
 
         return authData;
       } catch (err: unknown) {

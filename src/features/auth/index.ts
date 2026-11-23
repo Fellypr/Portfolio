@@ -6,6 +6,7 @@ export * from './types/auth.types';
 
 // Hooks de integração de API e formulário
 export * from './hooks/use-login';
+export * from './hooks/use-logout';
 export * from './hooks/use-login-form';
 export * from './hooks/use-current-user';
 
