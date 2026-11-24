@@ -17,7 +17,7 @@ export function HeroSection() {
 
   return (
     <section
-      className={`${poppins.className} relative min-h-screen w-full overflow-hidden bg-[#090f1d] bg-[url('/imagems/Hero/image1.png')] bg-[length:auto_811px] bg-top bg-repeat-x text-white md:min-h-[875px]`}
+      className={`${poppins.className} relative min-h-screen w-full overflow-hidden bg-[#090f1d] bg-[url('/imagems/About/fundo.png')] bg-[length:auto_811px] bg-top bg-repeat-x text-white md:min-h-[875px]`}
     >
       <div className="mx-auto flex w-full max-w-[1440px] flex-col items-center px-5 pt-[110px] text-center sm:px-8 md:pt-[110px]">
         <p className="text-[19px] leading-[1.3] font-semibold text-[#30db5c]">
@@ -54,15 +54,28 @@ export function HeroSection() {
           </a>
         </div>
 
-        <div className="relative mt-5 h-auto w-full max-w-[608px] md:mt-[17px]">
-          <Image
-            src="/imagems/Setup.png"
-            alt="Developer workstation setup"
-            width={608}
-            height={406}
-            priority
-            className="h-auto w-full object-cover"
-          />
+        <div className="relative mt-5 flex h-auto w-full max-w-[700px] items-center justify-center md:mt-[17px]">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            poster="/imagems/Setup.png"
+            className="pointer-events-none h-auto w-162 select-none object-contain mix-blend-screen [mask-image:radial-gradient(ellipse_at_center,black_77%,transparent_100%)]"
+            aria-label="Animação da estação de trabalho do desenvolvedor"
+          >
+            <source src="/videos/animationSetup-optimized.mp4" type="video/mp4" />
+            <source src="/videos/animationSetup.mp4" type="video/mp4" />
+            <Image
+              src="/imagems/Setup.png"
+              alt="Developer workstation setup"
+              width={608}
+              height={406}
+              priority
+              className="h-auto w-full object-cover"
+            />
+          </video>
         </div>
       </div>
 
